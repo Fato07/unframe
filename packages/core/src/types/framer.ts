@@ -54,7 +54,7 @@ export interface FramerTextStyle {
   fontSize: string;
   lineHeight: string;
   letterSpacing: string;
-  paragraphSpacing: string;
+  paragraphSpacing: string | number;
   transform: 'none' | 'uppercase' | 'lowercase' | 'capitalize';
   alignment: 'left' | 'center' | 'right' | 'justify';
   decoration: 'none' | 'underline' | 'line-through';
