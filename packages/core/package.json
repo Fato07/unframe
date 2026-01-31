@@ -1,0 +1,46 @@
+{
+  "name": "@unframe/core",
+  "version": "0.0.1",
+  "description": "Core parsing and transformation logic for Framer exports",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./parser": {
+      "import": "./dist/parser/index.mjs",
+      "require": "./dist/parser/index.js",
+      "types": "./dist/parser/index.d.ts"
+    },
+    "./transformer": {
+      "import": "./dist/transformer/index.mjs",
+      "require": "./dist/transformer/index.js",
+      "types": "./dist/transformer/index.d.ts"
+    },
+    "./generator": {
+      "import": "./dist/generator/index.mjs",
+      "require": "./dist/generator/index.js",
+      "types": "./dist/generator/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "lint": "eslint src/",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.2.0"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^4.3.0"
+  }
+}
