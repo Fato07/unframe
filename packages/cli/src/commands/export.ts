@@ -242,19 +242,65 @@ async function fetchProject(ctx: ExportContext): Promise<string> {
 }
 
 async function parseAndTransform(ctx: ExportContext, xml: string): Promise<UnframeAST> {
-  const { spinner, logger } = ctx
+  const { mcpClient, spinner, logger } = ctx
 
   spinner.start('Parsing project structure...')
 
   try {
     // Parse XML to raw structure
     const parsed = parseProjectXml(xml)
+    
+    spinner.text = 'Fetching page nodes...'
+    
+    // Fetch individual page nodes
+    const pageNodes = new Map()
+    const componentNodes = new Map()
+    
+    if (mcpClient && parsed.pages) {
+      for (const page of parsed.pages) {
+        try {
+          spinner.text = `Fetching page: ${page.path || page.nodeId}...`
+          const nodeXml = await mcpClient.getNodeXml(page.nodeId)
+          if (nodeXml) {
+            // Parse the node XML into a FramerNode structure
+            pageNodes.set(page.nodeId, { 
+              id: page.nodeId, 
+              type: 'Page',
+              name: page.path || 'Page',
+              rawXml: nodeXml 
+            })
+          }
+        } catch (e) {
+          logger.debug(`Failed to fetch page ${page.nodeId}: ${e}`)
+        }
+      }
+      
+      // Fetch component nodes
+      if (parsed.components) {
+        for (const comp of parsed.components) {
+          try {
+            spinner.text = `Fetching component: ${comp.name || comp.nodeId}...`
+            const nodeXml = await mcpClient.getNodeXml(comp.nodeId)
+            if (nodeXml) {
+              componentNodes.set(comp.nodeId, {
+                id: comp.nodeId,
+                type: 'Component', 
+                name: comp.name || 'Component',
+                rawXml: nodeXml
+              })
+            }
+          } catch (e) {
+            logger.debug(`Failed to fetch component ${comp.nodeId}: ${e}`)
+          }
+        }
+      }
+    }
 
     spinner.text = 'Building AST...'
 
-    // Build AST
+    // Build AST with fetched nodes
     const builder = createASTBuilder()
-    const ast = builder.build(parsed)
+    const ast = builder.buildProject(parsed, pageNodes, componentNodes)
 
     spinner.succeed(
       `Parsed: ${ast.pages.length} pages, ${ast.components.length} components`
