@@ -11,6 +11,7 @@ import chalk from 'chalk'
 import { createMCPClient, type MCPClient } from '@unframe/mcp-client'
 import {
   parseProjectXml,
+  parseNodeXml,
   createASTBuilder,
   scaffoldNextjsProject,
   type UnframeAST,
@@ -263,12 +264,21 @@ async function parseAndTransform(ctx: ExportContext, xml: string): Promise<Unfra
           const nodeXml = await mcpClient.getNodeXml(page.nodeId)
           if (nodeXml) {
             // Parse the node XML into a FramerNode structure
-            pageNodes.set(page.nodeId, { 
-              id: page.nodeId, 
-              type: 'Page',
-              name: page.path || 'Page',
-              rawXml: nodeXml 
-            })
+            try {
+              const parsedNode = parseNodeXml(nodeXml)
+              parsedNode.nodeId = page.nodeId
+              pageNodes.set(page.nodeId, parsedNode)
+              logger.debug(`Parsed page ${page.nodeId}: ${parsedNode.type} with ${parsedNode.children?.length || 0} children`)
+            } catch (parseErr) {
+              logger.debug(`Failed to parse page XML ${page.nodeId}: ${parseErr}`)
+              // Fallback to basic structure
+              pageNodes.set(page.nodeId, { 
+                nodeId: page.nodeId, 
+                type: 'Frame',
+                name: page.path || 'Page',
+                children: []
+              })
+            }
           }
         } catch (e) {
           logger.debug(`Failed to fetch page ${page.nodeId}: ${e}`)
@@ -282,12 +292,20 @@ async function parseAndTransform(ctx: ExportContext, xml: string): Promise<Unfra
             spinner.text = `Fetching component: ${comp.name || comp.nodeId}...`
             const nodeXml = await mcpClient.getNodeXml(comp.nodeId)
             if (nodeXml) {
-              componentNodes.set(comp.nodeId, {
-                id: comp.nodeId,
-                type: 'Component', 
-                name: comp.name || 'Component',
-                rawXml: nodeXml
-              })
+              try {
+                const parsedNode = parseNodeXml(nodeXml)
+                parsedNode.nodeId = comp.nodeId
+                componentNodes.set(comp.nodeId, parsedNode)
+                logger.debug(`Parsed component ${comp.nodeId}: ${parsedNode.type}`)
+              } catch (parseErr) {
+                logger.debug(`Failed to parse component XML ${comp.nodeId}: ${parseErr}`)
+                componentNodes.set(comp.nodeId, {
+                  nodeId: comp.nodeId,
+                  type: 'Component', 
+                  name: comp.name || 'Component',
+                  children: []
+                })
+              }
             }
           } catch (e) {
             logger.debug(`Failed to fetch component ${comp.nodeId}: ${e}`)

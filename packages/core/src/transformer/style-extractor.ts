@@ -1174,6 +1174,11 @@ export class StyleExtractor {
       return SPACING_SCALE[value]
     }
 
+    // Ensure value is a string
+    if (typeof value !== 'string') {
+      value = String(value ?? '')
+    }
+
     // Handle 0
     if (value === '0' || value === '0px') {
       return '0'
