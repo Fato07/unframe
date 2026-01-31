@@ -9,6 +9,9 @@
   },
   "author": "CodesDevs <hello@codesdevs.io>",
   "license": "MIT",
+  "bin": {
+    "unframe": "./packages/cli/dist/index.js"
+  },
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",

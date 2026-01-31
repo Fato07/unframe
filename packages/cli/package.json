@@ -1,0 +1,49 @@
+{
+  "name": "@unframe/cli",
+  "version": "0.1.0",
+  "description": "CLI tool for exporting Framer projects to Next.js",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "unframe": "./dist/index.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "dev": "tsup src/index.ts --format esm --dts --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src/"
+  },
+  "dependencies": {
+    "@unframe/core": "workspace:*",
+    "@unframe/mcp-client": "workspace:*",
+    "chalk": "^5.3.0",
+    "commander": "^12.0.0",
+    "cosmiconfig": "^9.0.0",
+    "ora": "^8.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.2.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "framer",
+    "nextjs",
+    "react",
+    "export",
+    "cli"
+  ],
+  "license": "MIT"
+}
