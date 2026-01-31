@@ -12,11 +12,11 @@ export * from './types/index.js'
 // Parser
 export * from './parser/index.js'
 
-// Transformer (TODO)
-// export * from './transformer'
+// Transformer
+export * from './transformer/index.js'
 
-// Generator (TODO)
-// export * from './generator'
+// Generator
+export * from './generator/index.js'
 
 // Version
 export const VERSION = '0.0.1'

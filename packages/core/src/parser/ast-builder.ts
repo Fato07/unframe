@@ -369,7 +369,7 @@ export class ASTBuilder {
     if (attrs.backgroundColor) {
       const color = parseColorValue(attrs.backgroundColor as string)
       if (color.type === 'style') {
-        styles.push({ property: 'background-color', value: `var(--color${color.value.replace(/\//g, '-').toLowerCase()})` })
+        styles.push({ property: 'background-color', value: `var(--color${color.value.replace(/\//g, '-').replace(/\s+/g, '-').toLowerCase()})` })
       } else {
         styles.push({ property: 'background-color', value: color.value })
       }
@@ -500,7 +500,7 @@ export class ASTBuilder {
   }
 
   private buildColorStyle(style: FramerColorStyle): ColorStyleAST {
-    const cssVariable = `--color${style.path.replace(/\//g, '-').toLowerCase()}`
+    const cssVariable = `--color${style.path.replace(/\//g, '-').replace(/\s+/g, '-').toLowerCase()}`
     return {
       name: style.path.split('/').pop() || style.path,
       path: style.path,
@@ -511,7 +511,7 @@ export class ASTBuilder {
   }
 
   private buildTypographyStyle(style: FramerTextStyle): TypographyStyleAST {
-    const cssClass = `text${style.path.replace(/\//g, '-').replace(/\s+/g, '-').toLowerCase()}`
+    const cssClass = `text${style.path.replace(/\//g, '-').replace(/\s+/g, '-').replace(/[()]/g, '').toLowerCase()}`
     const parsedFont = parseFontValue(style.font)
     
     const styles: StyleRule[] = [
