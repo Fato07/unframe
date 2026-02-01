@@ -509,7 +509,7 @@ export class StyleExtractor {
   // Sizing Extractors
   // ============================================
 
-  private extractWidth(value: string): string | TailwindClass | null {
+  private extractWidth(value: string): string | TailwindClass | TailwindClass[] | null {
     if (value === '100%') return 'w-full'
     if (value === 'auto') return 'w-auto'
     if (value === 'fit-content') return 'w-fit'
@@ -517,6 +517,29 @@ export class StyleExtractor {
     if (value === 'max-content') return 'w-max'
     if (value === '100vw') return 'w-screen'
     if (value === '1fr') return 'w-full'
+
+    // Check for common container widths that should be responsive
+    const containerWidthMap: Record<string, { maxW: string; responsive: boolean }> = {
+      '1536px': { maxW: 'max-w-screen-2xl', responsive: true },
+      '1440px': { maxW: 'max-w-[1440px]', responsive: true },  // Common design width
+      '1400px': { maxW: 'max-w-screen-xl', responsive: true },
+      '1280px': { maxW: 'max-w-7xl', responsive: true },
+      '1200px': { maxW: 'max-w-7xl', responsive: true },  // Common container width
+      '1152px': { maxW: 'max-w-6xl', responsive: true },
+      '1024px': { maxW: 'max-w-5xl', responsive: true },
+      '960px': { maxW: 'max-w-5xl', responsive: true },
+      '896px': { maxW: 'max-w-4xl', responsive: true },
+      '768px': { maxW: 'max-w-3xl', responsive: true },
+    }
+
+    const containerWidth = containerWidthMap[value]
+    if (containerWidth && containerWidth.responsive) {
+      // Return w-full + max-w-* for responsive behavior
+      return [
+        { class: 'w-full' },
+        { class: containerWidth.maxW, arbitraryValue: containerWidth.maxW.includes('[') },
+      ]
+    }
 
     const spacing = this.parseSpacing(value)
     if (spacing) {

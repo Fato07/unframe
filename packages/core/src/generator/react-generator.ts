@@ -365,19 +365,27 @@ export class ReactGenerator {
 
   /**
    * Generate props string for component instances
+   * Infers semantic prop names from Framer's random IDs based on value patterns
    */
   private generatePropsString(props: Record<string, unknown>): string {
     const entries = Object.entries(props)
     if (entries.length === 0) return ''
 
+    // Track used prop names to avoid duplicates
+    const usedNames = new Set<string>()
+    
     const propsArr = entries.map(([key, value]) => {
+      // Infer semantic name from value if key looks like a Framer ID
+      const semanticKey = this.inferPropName(key, value, usedNames)
+      usedNames.add(semanticKey)
+
       if (typeof value === 'string') {
-        return `${key}="${value}"`
+        return `${semanticKey}="${value}"`
       }
       if (typeof value === 'boolean') {
-        return value ? key : `${key}={false}`
+        return value ? semanticKey : `${semanticKey}={false}`
       }
-      return `${key}={${JSON.stringify(value)}}`
+      return `${semanticKey}={${JSON.stringify(value)}}`
     })
 
     if (propsArr.join(' ').length < 60) {
@@ -385,6 +393,134 @@ export class ReactGenerator {
     }
 
     return '\n  ' + propsArr.join('\n  ') + '\n'
+  }
+
+  /**
+   * Infer a semantic prop name from value patterns
+   * Converts Framer's random IDs (e.g., "OLBJJ2ZZ2") to meaningful names
+   */
+  private inferPropName(key: string, value: unknown, usedNames: Set<string>): string {
+    // Check if this looks like a Framer random ID
+    // Framer IDs have patterns like: OLBJJ2ZZ2, sVlsQOR6K, t90xdY6CE, NAbd17i0q
+    // They typically have:
+    // - Numbers mixed in the middle (not just at the end)
+    // - Unusual uppercase/lowercase patterns (not proper camelCase)
+    // - Length 7-12 characters
+    
+    // First, check if it's a common/semantic prop name we should keep
+    const semanticProps = new Set([
+      'text', 'label', 'title', 'content', 'children', 'name', 'value',
+      'color', 'backgroundColor', 'textColor', 'bgColor', 'fill', 'stroke',
+      'size', 'width', 'height', 'padding', 'margin', 'gap', 'fontSize',
+      'href', 'link', 'url', 'src', 'alt',
+      'disabled', 'enabled', 'active', 'visible', 'hidden', 'selected',
+      'variant', 'type', 'kind', 'style', 'className',
+      'onClick', 'onPress', 'onHover', 'onChange',
+      'id', 'key', 'ref',
+    ])
+    
+    if (semanticProps.has(key)) {
+      return key
+    }
+
+    // Check if it's a valid camelCase name without numbers mixed in
+    // e.g., "buttonText" is semantic, but "t90xdY6CE" is a Framer ID
+    const isValidCamelCase = /^[a-z]+[a-zA-Z]*$/.test(key) && key.length >= 4
+    if (isValidCamelCase) {
+      return key
+    }
+
+    // Detect Framer-style random IDs
+    // - Has numbers in the middle (not just trailing)
+    // - Mix of upper and lowercase in non-camelCase pattern
+    // - Contains underscores in weird places
+    const hasMiddleNumbers = /[a-zA-Z]\d+[a-zA-Z]/.test(key)
+    const hasWeirdCasing = /[a-z][A-Z][a-z]/.test(key) && /[A-Z][a-z][A-Z]/.test(key)
+    const hasTrailingUnderscore = /_$/.test(key)
+    const isAllCapsWithNumbers = /^[A-Z0-9]+$/.test(key) && /\d/.test(key)
+    
+    const isFramerId = hasMiddleNumbers || hasWeirdCasing || hasTrailingUnderscore || isAllCapsWithNumbers
+
+    if (!isFramerId) {
+      return key
+    }
+
+    // Infer name from value type/content
+    let inferredName: string | null = null
+
+    if (typeof value === 'string') {
+      const strValue = value.toLowerCase()
+      
+      // Color patterns
+      if (/^rgb\(/.test(value) || /^rgba\(/.test(value) || /^#[0-9a-f]{3,8}$/i.test(value)) {
+        // Try to infer specific color role from value
+        if (strValue.includes('255') && strValue.includes('255') && strValue.includes('255')) {
+          inferredName = this.getUniqueName('textColor', usedNames) || 
+                         this.getUniqueName('color', usedNames)
+        } else if (strValue === 'rgb(0,0,0)' || strValue === 'rgb(0, 0, 0)' || value === '#000' || value === '#000000') {
+          inferredName = this.getUniqueName('backgroundColor', usedNames) ||
+                         this.getUniqueName('bgColor', usedNames) ||
+                         this.getUniqueName('color', usedNames)
+        } else {
+          inferredName = this.getUniqueName('color', usedNames) ||
+                         this.getUniqueName('accentColor', usedNames) ||
+                         this.getUniqueName('primaryColor', usedNames)
+        }
+      }
+      // URL patterns
+      else if (/^(https?:\/\/|\/|#)/.test(value)) {
+        inferredName = this.getUniqueName('href', usedNames) ||
+                       this.getUniqueName('link', usedNames) ||
+                       this.getUniqueName('url', usedNames)
+      }
+      // Text content (fallback for strings)
+      else {
+        inferredName = this.getUniqueName('text', usedNames) ||
+                       this.getUniqueName('label', usedNames) ||
+                       this.getUniqueName('title', usedNames) ||
+                       this.getUniqueName('content', usedNames)
+      }
+    }
+    else if (typeof value === 'number') {
+      // Infer from value range
+      if (value >= 0 && value <= 1) {
+        inferredName = this.getUniqueName('opacity', usedNames) ||
+                       this.getUniqueName('alpha', usedNames)
+      } else if (value > 1 && value <= 100) {
+        inferredName = this.getUniqueName('size', usedNames) ||
+                       this.getUniqueName('fontSize', usedNames) ||
+                       this.getUniqueName('width', usedNames)
+      } else {
+        inferredName = this.getUniqueName('value', usedNames) ||
+                       this.getUniqueName('size', usedNames) ||
+                       this.getUniqueName('amount', usedNames)
+      }
+    }
+    else if (typeof value === 'boolean') {
+      inferredName = this.getUniqueName('enabled', usedNames) ||
+                     this.getUniqueName('active', usedNames) ||
+                     this.getUniqueName('visible', usedNames) ||
+                     this.getUniqueName('show', usedNames)
+    }
+
+    return inferredName || key
+  }
+
+  /**
+   * Get a unique prop name, returning null if already used
+   */
+  private getUniqueName(name: string, usedNames: Set<string>): string | null {
+    if (!usedNames.has(name)) {
+      return name
+    }
+    // Try numbered variants
+    for (let i = 2; i <= 5; i++) {
+      const numbered = `${name}${i}`
+      if (!usedNames.has(numbered)) {
+        return numbered
+      }
+    }
+    return null
   }
 
   /**

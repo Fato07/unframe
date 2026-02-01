@@ -439,4 +439,141 @@ describe('ReactGenerator', () => {
       expect(code).toContain('Build something amazing')
     })
   })
+
+  describe('Component Prop Name Inference', () => {
+    it('should infer semantic prop names from Framer IDs', () => {
+      const element: ElementAST = {
+        id: 'test-1',
+        type: 'component',
+        name: 'BadgeComponent',
+        componentRef: 'elements/badge',
+        componentProps: {
+          'OLBJJ2ZZ2': 'Coming soon',           // Should become 'text'
+          'sVlsQOR6K': 'rgb(255, 255, 255)',    // Should become 'textColor' or 'color'
+          'bWKfsW3Ha': 'rgb(13, 13, 13)',       // Should become 'backgroundColor' or similar
+          'zKyvF25Hr': 0.9,                     // Should become 'opacity'
+          'LZ2eCPtLx': 14,                      // Should become 'size' or 'fontSize'
+        },
+        props: {},
+        styles: [],
+        children: [],
+      }
+
+      const generated = generator.generateComponent({
+        id: 'comp-1',
+        name: 'Page',
+        originalName: 'Page',
+        props: [],
+        variants: [],
+        defaultVariant: 'default',
+        element,
+      })
+
+      // Should NOT contain raw Framer IDs
+      expect(generated.code).not.toContain('OLBJJ2ZZ2')
+      expect(generated.code).not.toContain('sVlsQOR6K')
+      expect(generated.code).not.toContain('bWKfsW3Ha')
+      expect(generated.code).not.toContain('zKyvF25Hr')
+      expect(generated.code).not.toContain('LZ2eCPtLx')
+
+      // Should contain semantic names
+      expect(generated.code).toContain('text="Coming soon"')
+      expect(generated.code).toContain('textColor="rgb(255, 255, 255)"')
+      expect(generated.code).toContain('color="rgb(13, 13, 13)"')
+      expect(generated.code).toContain('opacity={0.9}')
+      expect(generated.code).toContain('size={14}')
+    })
+
+    it('should keep already semantic prop names', () => {
+      const element: ElementAST = {
+        id: 'test-1',
+        type: 'component',
+        name: 'Button',
+        componentRef: 'ui/button',
+        componentProps: {
+          'label': 'Click me',
+          'variant': 'primary',
+          'disabled': false,
+        },
+        props: {},
+        styles: [],
+        children: [],
+      }
+
+      const generated = generator.generateComponent({
+        id: 'comp-1',
+        name: 'Page',
+        originalName: 'Page',
+        props: [],
+        variants: [],
+        defaultVariant: 'default',
+        element,
+      })
+
+      expect(generated.code).toContain('label="Click me"')
+      expect(generated.code).toContain('variant="primary"')
+      expect(generated.code).toContain('disabled={false}')
+    })
+
+    it('should infer href from URL values', () => {
+      const element: ElementAST = {
+        id: 'test-1',
+        type: 'component',
+        name: 'CTAButton',
+        componentRef: 'cta/button',
+        componentProps: {
+          'NAbd17i0q': 'Learn more',
+          't90xdY6CE': '/about',
+        },
+        props: {},
+        styles: [],
+        children: [],
+      }
+
+      const generated = generator.generateComponent({
+        id: 'comp-1',
+        name: 'Page',
+        originalName: 'Page',
+        props: [],
+        variants: [],
+        defaultVariant: 'default',
+        element,
+      })
+
+      expect(generated.code).toContain('text="Learn more"')
+      expect(generated.code).toContain('href="/about"')
+    })
+
+    it('should handle multiple text props with unique names', () => {
+      const element: ElementAST = {
+        id: 'test-1',
+        type: 'component',
+        name: 'Card',
+        componentRef: 'ui/card',
+        componentProps: {
+          'ABC123': 'Title text',
+          'DEF456': 'Subtitle text',
+          'GHI789': 'Description text',
+        },
+        props: {},
+        styles: [],
+        children: [],
+      }
+
+      const generated = generator.generateComponent({
+        id: 'comp-1',
+        name: 'Page',
+        originalName: 'Page',
+        props: [],
+        variants: [],
+        defaultVariant: 'default',
+        element,
+      })
+
+      // Should use unique names for each text prop (with numbered suffixes for duplicates)
+      expect(generated.code).toContain('text="Title text"')
+      expect(generated.code).toContain('text2="Subtitle text"')
+      expect(generated.code).toContain('text3="Description text"')
+    })
+  })
 })

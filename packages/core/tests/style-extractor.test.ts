@@ -114,9 +114,22 @@ describe('StyleExtractor', () => {
       }
     })
 
-    it('should use arbitrary values for custom sizes', () => {
-      const result = extractor.extract([{ property: 'width', value: '1200px' }])
-      expect(classesToString(result)).toBe('w-[1200px]')
+    it('should convert common container widths to responsive classes', () => {
+      // Common design widths should become responsive max-w-* classes
+      const result1200 = extractor.extract([{ property: 'width', value: '1200px' }])
+      expect(classesToString(result1200)).toBe('w-full max-w-7xl')
+
+      const result1440 = extractor.extract([{ property: 'width', value: '1440px' }])
+      expect(classesToString(result1440)).toBe('w-full max-w-[1440px]')
+
+      const result1280 = extractor.extract([{ property: 'width', value: '1280px' }])
+      expect(classesToString(result1280)).toBe('w-full max-w-7xl')
+    })
+
+    it('should use arbitrary values for non-standard sizes', () => {
+      // Non-container widths should still use arbitrary values
+      const result = extractor.extract([{ property: 'width', value: '573px' }])
+      expect(classesToString(result)).toBe('w-[573px]')
     })
   })
 
