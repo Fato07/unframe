@@ -114,6 +114,10 @@ export interface ElementAST {
   
   // For interactions
   interactions?: InteractionAST[];
+  
+  // Parent layout context - used to determine if absolute positioning should be skipped
+  // Children of stack/grid containers should NOT have absolute positioning
+  parentLayout?: 'stack' | 'grid' | 'none';
 }
 
 export interface TextAST {

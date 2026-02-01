@@ -177,10 +177,17 @@ export class ASTBuilder {
 
   /**
    * Build element AST from Framer node
+   * @param node The Framer node to convert
+   * @param parentLayout The layout type of the parent element (stack, grid, or none)
    */
-  buildElement(node: FramerNode): ElementAST {
+  buildElement(node: FramerNode, parentLayout: 'stack' | 'grid' | 'none' = 'none'): ElementAST {
     const elementType = this.inferElementType(node)
-    const styles = this.extractStyles(node.attributes)
+    
+    // Determine current element's layout type for passing to children
+    const currentLayout = this.getLayoutType(node.attributes)
+    
+    // Extract styles, passing parent layout context to skip absolute positioning for flex/grid children
+    const styles = this.extractStyles(node.attributes, parentLayout)
     
     // Process children
     const children: (ElementAST | TextAST)[] = []
@@ -194,9 +201,9 @@ export class ASTBuilder {
       })
     }
 
-    // Process child nodes
+    // Process child nodes - pass current layout type so children know their parent's layout
     for (const child of node.children) {
-      children.push(this.buildElement(child))
+      children.push(this.buildElement(child, currentLayout))
     }
 
     const element: ElementAST = {
@@ -206,6 +213,7 @@ export class ASTBuilder {
       props: this.extractProps(node.attributes),
       styles,
       children,
+      parentLayout, // Store parent layout for reference
     }
 
     // Add component reference if this is a component instance
@@ -221,6 +229,19 @@ export class ASTBuilder {
     }
 
     return element
+  }
+
+  /**
+   * Determine the layout type of an element from its attributes
+   */
+  private getLayoutType(attrs: FramerNodeAttributes): 'stack' | 'grid' | 'none' {
+    if (attrs.layout === 'stack') {
+      return 'stack'
+    }
+    if (attrs.layout === 'grid') {
+      return 'grid'
+    }
+    return 'none'
   }
 
   /**
@@ -326,12 +347,20 @@ export class ASTBuilder {
     }
   }
 
-  private extractStyles(attrs: FramerNodeAttributes): StyleRule[] {
+  private extractStyles(attrs: FramerNodeAttributes, parentLayout: 'stack' | 'grid' | 'none' = 'none'): StyleRule[] {
     const styles: StyleRule[] = []
 
-    // Position
+    // Determine if this element is a child of a flex/grid container
+    // Children of stack (flex) or grid containers should NOT have absolute positioning
+    // because their layout is controlled by the parent's flex/grid system
+    const isFlexOrGridChild = parentLayout === 'stack' || parentLayout === 'grid'
+
+    // Position - only add if NOT a flex/grid child, or if explicitly set to something other than absolute
     if (attrs.position && attrs.position !== 'relative') {
-      styles.push({ property: 'position', value: attrs.position as string })
+      // Skip absolute positioning for flex/grid children
+      if (!(isFlexOrGridChild && attrs.position === 'absolute')) {
+        styles.push({ property: 'position', value: attrs.position as string })
+      }
     }
 
     // Size
@@ -348,18 +377,22 @@ export class ASTBuilder {
       styles.push({ property: 'max-width', value: attrs.maxWidth as string })
     }
 
-    // Positioning (absolute/fixed)
-    if (attrs.top !== undefined) {
-      styles.push({ property: 'top', value: attrs.top as string })
-    }
-    if (attrs.right !== undefined) {
-      styles.push({ property: 'right', value: attrs.right as string })
-    }
-    if (attrs.bottom !== undefined) {
-      styles.push({ property: 'bottom', value: attrs.bottom as string })
-    }
-    if (attrs.left !== undefined) {
-      styles.push({ property: 'left', value: attrs.left as string })
+    // Positioning (absolute/fixed) - SKIP for flex/grid children
+    // These properties only make sense for absolutely/fixed positioned elements
+    // Flex/grid children are positioned by the parent's layout system
+    if (!isFlexOrGridChild) {
+      if (attrs.top !== undefined) {
+        styles.push({ property: 'top', value: attrs.top as string })
+      }
+      if (attrs.right !== undefined) {
+        styles.push({ property: 'right', value: attrs.right as string })
+      }
+      if (attrs.bottom !== undefined) {
+        styles.push({ property: 'bottom', value: attrs.bottom as string })
+      }
+      if (attrs.left !== undefined) {
+        styles.push({ property: 'left', value: attrs.left as string })
+      }
     }
 
     // Visual

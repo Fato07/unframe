@@ -1259,3 +1259,183 @@ export function classesToString(extracted: ExtractedStyles, prefix?: string): st
 
   return classes.join(' ')
 }
+
+// ============================================
+// Responsive Class Extraction
+// ============================================
+
+/**
+ * Input for responsive style extraction
+ * Follows Framer's desktop-first breakpoint model
+ */
+export interface ResponsiveStyles {
+  desktop: StyleRule[]
+  tablet?: StyleRule[]
+  mobile?: StyleRule[]
+}
+
+/**
+ * Extracts a Tailwind class string from CSS property/value
+ * Returns the class without any responsive prefix
+ */
+function extractSingleClass(
+  extractor: StyleExtractor,
+  property: string,
+  value: string
+): string | null {
+  const rule: StyleRule = { property, value }
+  const result = extractor.extract([rule])
+  
+  if (result.classes.length === 0) return null
+  
+  // For multi-class results (e.g., padding → py-4 px-6), join them
+  return result.classes.map(c => c.class).join(' ')
+}
+
+/**
+ * Groups StyleRules by their CSS property
+ * Returns a map of property → value
+ */
+function stylesToPropertyMap(styles: StyleRule[]): Map<string, string> {
+  const map = new Map<string, string>()
+  for (const rule of styles) {
+    map.set(rule.property, rule.value)
+  }
+  return map
+}
+
+/**
+ * Extracts responsive Tailwind classes using mobile-first approach
+ * 
+ * Framer is desktop-first, Tailwind is mobile-first.
+ * This function converts:
+ * - Framer Mobile → Tailwind base (no prefix)
+ * - Framer Tablet → Tailwind `md:` prefix  
+ * - Framer Desktop → Tailwind `lg:` prefix
+ * 
+ * Intelligently deduplicates classes that are the same across breakpoints.
+ * 
+ * @param extractor - The style extractor instance
+ * @param styles - Responsive styles from Framer (desktop, tablet, mobile)
+ * @returns Merged Tailwind class string with responsive prefixes
+ */
+export function extractResponsiveClasses(
+  extractor: StyleExtractor,
+  styles: ResponsiveStyles
+): string {
+  const desktopProps = stylesToPropertyMap(styles.desktop)
+  const tabletProps = styles.tablet ? stylesToPropertyMap(styles.tablet) : new Map<string, string>()
+  const mobileProps = styles.mobile ? stylesToPropertyMap(styles.mobile) : new Map<string, string>()
+
+  // Collect all unique properties across breakpoints
+  const allProperties = new Set<string>([
+    ...desktopProps.keys(),
+    ...tabletProps.keys(),
+    ...mobileProps.keys(),
+  ])
+
+  const finalClasses: string[] = []
+
+  for (const property of allProperties) {
+    const desktopValue = desktopProps.get(property)
+    const tabletValue = tabletProps.get(property) ?? desktopValue // Inherit from desktop if not specified
+    const mobileValue = mobileProps.get(property) ?? tabletValue // Inherit from tablet if not specified
+
+    // Extract Tailwind classes for each breakpoint
+    const desktopClass = desktopValue ? extractSingleClass(extractor, property, desktopValue) : null
+    const tabletClass = tabletValue ? extractSingleClass(extractor, property, tabletValue) : null
+    const mobileClass = mobileValue ? extractSingleClass(extractor, property, mobileValue) : null
+
+    // Smart deduplication for mobile-first output
+    // Base class is mobile, then md: for tablet if different, then lg: for desktop if different
+    
+    if (mobileClass && tabletClass && desktopClass) {
+      // All three breakpoints have values
+      if (mobileClass === tabletClass && tabletClass === desktopClass) {
+        // All same - just use base class (mobile-first, applies to all)
+        finalClasses.push(mobileClass)
+      } else if (mobileClass === tabletClass && tabletClass !== desktopClass) {
+        // Mobile and tablet same, desktop different
+        // Base = mobile/tablet, lg: = desktop
+        finalClasses.push(mobileClass)
+        addPrefixedClasses(finalClasses, desktopClass, 'lg:')
+      } else if (mobileClass !== tabletClass && tabletClass === desktopClass) {
+        // Mobile different, tablet and desktop same
+        // Base = mobile, md: = tablet/desktop (md: applies to md and up)
+        finalClasses.push(mobileClass)
+        addPrefixedClasses(finalClasses, tabletClass, 'md:')
+      } else {
+        // All different
+        // Base = mobile, md: = tablet, lg: = desktop
+        finalClasses.push(mobileClass)
+        addPrefixedClasses(finalClasses, tabletClass, 'md:')
+        addPrefixedClasses(finalClasses, desktopClass, 'lg:')
+      }
+    } else if (mobileClass && tabletClass) {
+      // Mobile and tablet only
+      if (mobileClass === tabletClass) {
+        finalClasses.push(mobileClass)
+      } else {
+        finalClasses.push(mobileClass)
+        addPrefixedClasses(finalClasses, tabletClass, 'md:')
+      }
+    } else if (tabletClass && desktopClass) {
+      // Tablet and desktop only (no mobile override)
+      if (tabletClass === desktopClass) {
+        // Same for both - use as base
+        finalClasses.push(tabletClass)
+      } else {
+        // Different - tablet is base (smallest), desktop gets lg:
+        finalClasses.push(tabletClass)
+        addPrefixedClasses(finalClasses, desktopClass, 'lg:')
+      }
+    } else if (mobileClass && desktopClass) {
+      // Mobile and desktop only (no tablet override)
+      if (mobileClass === desktopClass) {
+        finalClasses.push(mobileClass)
+      } else {
+        // Mobile is base, desktop gets lg:
+        finalClasses.push(mobileClass)
+        addPrefixedClasses(finalClasses, desktopClass, 'lg:')
+      }
+    } else if (mobileClass) {
+      finalClasses.push(mobileClass)
+    } else if (tabletClass) {
+      finalClasses.push(tabletClass)
+    } else if (desktopClass) {
+      finalClasses.push(desktopClass)
+    }
+  }
+
+  return finalClasses.join(' ')
+}
+
+/**
+ * Adds prefixed classes to the array
+ * Handles multi-class values (e.g., "py-4 px-6" → "md:py-4 md:px-6")
+ */
+function addPrefixedClasses(arr: string[], classes: string, prefix: string): void {
+  const parts = classes.split(/\s+/).filter(Boolean)
+  for (const part of parts) {
+    arr.push(`${prefix}${part}`)
+  }
+}
+
+/**
+ * Alternative: Extract responsive classes from ElementAST
+ * Convenience function that takes an element's styles and responsiveStyles
+ */
+export function extractElementResponsiveClasses(
+  extractor: StyleExtractor,
+  styles: StyleRule[],
+  responsiveStyles?: {
+    tablet?: StyleRule[]
+    mobile?: StyleRule[]
+  }
+): string {
+  return extractResponsiveClasses(extractor, {
+    desktop: styles,
+    tablet: responsiveStyles?.tablet,
+    mobile: responsiveStyles?.mobile,
+  })
+}

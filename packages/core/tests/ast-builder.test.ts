@@ -206,4 +206,222 @@ describe('ASTBuilder', () => {
       expect(component.originalName).toBe('Elements/Badge')
     })
   })
+
+  describe('Stack/Grid layout - absolute positioning fix', () => {
+    const stackWithAbsoluteChildrenXml = `
+<Container
+    nodeId="container1"
+    position="absolute"
+    top="0"
+    left="0"
+    width="1200px"
+    height="fit-content"
+    layout="stack"
+    stackDirection="horizontal"
+    gap="24px"
+>
+  <Card1
+      nodeId="card1"
+      position="absolute"
+      top="0"
+      left="0"
+      width="300px"
+      height="200px"
+      backgroundColor="rgb(255,255,255)"
+  />
+  <Card2
+      nodeId="card2"
+      position="absolute"
+      top="0"
+      left="324px"
+      width="300px"
+      height="200px"
+      backgroundColor="rgb(255,255,255)"
+  />
+</Container>
+`
+
+    const gridWithAbsoluteChildrenXml = `
+<GridContainer
+    nodeId="grid1"
+    position="absolute"
+    top="0"
+    left="0"
+    width="1200px"
+    height="fit-content"
+    layout="grid"
+    gridColumns="3"
+    gap="24px"
+>
+  <GridItem1
+      nodeId="item1"
+      position="absolute"
+      top="0"
+      left="0"
+      width="100%"
+      height="200px"
+  />
+  <GridItem2
+      nodeId="item2"
+      position="absolute"
+      top="0"
+      left="0"
+      width="100%"
+      height="200px"
+  />
+</GridContainer>
+`
+
+    const nestedStackXml = `
+<Outer
+    nodeId="outer1"
+    position="absolute"
+    top="0"
+    left="0"
+    width="1200px"
+    layout="stack"
+    stackDirection="vertical"
+    gap="32px"
+>
+  <Inner
+      nodeId="inner1"
+      position="absolute"
+      top="0"
+      left="0"
+      width="100%"
+      layout="stack"
+      stackDirection="horizontal"
+      gap="16px"
+  >
+    <DeepChild
+        nodeId="deep1"
+        position="absolute"
+        top="0"
+        left="0"
+        width="200px"
+        height="100px"
+    />
+  </Inner>
+</Outer>
+`
+
+    it('should NOT add absolute positioning to children of stack (flex) containers', () => {
+      const node = parseNodeXml(stackWithAbsoluteChildrenXml)
+      const builder = createASTBuilder()
+      const element = builder.buildElement(node)
+      
+      // The container itself should have flex layout
+      const containerDisplay = element.styles.find(s => s.property === 'display')
+      expect(containerDisplay?.value).toBe('flex')
+      
+      // The container can have absolute positioning (it's root level, no parent)
+      // But that's fine since it doesn't have a flex/grid parent
+      
+      // The children should NOT have position: absolute
+      const card1 = element.children[0] as any
+      const card2 = element.children[1] as any
+      
+      const card1Position = card1.styles.find((s: any) => s.property === 'position')
+      const card2Position = card2.styles.find((s: any) => s.property === 'position')
+      
+      expect(card1Position).toBeUndefined()
+      expect(card2Position).toBeUndefined()
+      
+      // Children should NOT have top/left/right/bottom
+      const card1Top = card1.styles.find((s: any) => s.property === 'top')
+      const card1Left = card1.styles.find((s: any) => s.property === 'left')
+      const card2Top = card2.styles.find((s: any) => s.property === 'top')
+      const card2Left = card2.styles.find((s: any) => s.property === 'left')
+      
+      expect(card1Top).toBeUndefined()
+      expect(card1Left).toBeUndefined()
+      expect(card2Top).toBeUndefined()
+      expect(card2Left).toBeUndefined()
+      
+      // Children should still have their size styles
+      const card1Width = card1.styles.find((s: any) => s.property === 'width')
+      expect(card1Width?.value).toBe('300px')
+    })
+
+    it('should NOT add absolute positioning to children of grid containers', () => {
+      const node = parseNodeXml(gridWithAbsoluteChildrenXml)
+      const builder = createASTBuilder()
+      const element = builder.buildElement(node)
+      
+      // The container should have grid layout
+      const containerDisplay = element.styles.find(s => s.property === 'display')
+      expect(containerDisplay?.value).toBe('grid')
+      
+      // Children should NOT have position: absolute
+      const item1 = element.children[0] as any
+      const item2 = element.children[1] as any
+      
+      const item1Position = item1.styles.find((s: any) => s.property === 'position')
+      const item2Position = item2.styles.find((s: any) => s.property === 'position')
+      
+      expect(item1Position).toBeUndefined()
+      expect(item2Position).toBeUndefined()
+      
+      // Children should NOT have top/left
+      const item1Top = item1.styles.find((s: any) => s.property === 'top')
+      const item1Left = item1.styles.find((s: any) => s.property === 'left')
+      
+      expect(item1Top).toBeUndefined()
+      expect(item1Left).toBeUndefined()
+    })
+
+    it('should handle nested stack containers correctly', () => {
+      const node = parseNodeXml(nestedStackXml)
+      const builder = createASTBuilder()
+      const element = builder.buildElement(node)
+      
+      // Outer is root level (no flex parent), so it can have absolute if needed
+      // But in our case, root elements don't have absolute by default
+      
+      // Inner is a child of Outer (which is a stack), so Inner should NOT have absolute
+      const inner = element.children[0] as any
+      const innerPosition = inner.styles.find((s: any) => s.property === 'position')
+      expect(innerPosition).toBeUndefined()
+      
+      // Inner should still be a flex container
+      const innerDisplay = inner.styles.find((s: any) => s.property === 'display')
+      expect(innerDisplay?.value).toBe('flex')
+      
+      // DeepChild is a child of Inner (which is also a stack), so DeepChild should NOT have absolute
+      const deepChild = inner.children[0] as any
+      const deepChildPosition = deepChild.styles.find((s: any) => s.property === 'position')
+      const deepChildTop = deepChild.styles.find((s: any) => s.property === 'top')
+      const deepChildLeft = deepChild.styles.find((s: any) => s.property === 'left')
+      
+      expect(deepChildPosition).toBeUndefined()
+      expect(deepChildTop).toBeUndefined()
+      expect(deepChildLeft).toBeUndefined()
+    })
+
+    it('should track parentLayout on elements', () => {
+      const node = parseNodeXml(stackWithAbsoluteChildrenXml)
+      const builder = createASTBuilder()
+      const element = builder.buildElement(node)
+      
+      // Root element has no parent layout (or 'none')
+      expect(element.parentLayout).toBe('none')
+      
+      // Children of stack should have parentLayout: 'stack'
+      const card1 = element.children[0] as any
+      const card2 = element.children[1] as any
+      
+      expect(card1.parentLayout).toBe('stack')
+      expect(card2.parentLayout).toBe('stack')
+    })
+
+    it('should track parentLayout for grid children', () => {
+      const node = parseNodeXml(gridWithAbsoluteChildrenXml)
+      const builder = createASTBuilder()
+      const element = builder.buildElement(node)
+      
+      // Children of grid should have parentLayout: 'grid'
+      const item1 = element.children[0] as any
+      expect(item1.parentLayout).toBe('grid')
+    })
+  })
 })

@@ -18,6 +18,7 @@ import {
   StyleExtractor,
   createStyleExtractor,
   classesToString,
+  extractElementResponsiveClasses,
   type ExtractedStyles,
 } from '../transformer/style-extractor.js'
 
