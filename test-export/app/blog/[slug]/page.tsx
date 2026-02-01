@@ -21,7 +21,7 @@ export default function BlogSlugPage() {
         <div className="w-full h-fit max-w-[600px] flex flex-row gap-2.5 justify-center items-center">
           <div className="w-full h-[1fr]">
           </div>
-          <p className="w-fit h-fit" href="/blog/:slug">Vertical vs Horizontal AI: Which Scales Better? ›</p>
+          <a className="w-fit h-fit" href="/blog/:slug">Vertical vs Horizontal AI: Which Scales Better? ›</a>
         </div>
         <div className="w-full h-[400px] rounded-3xl">
         </div>

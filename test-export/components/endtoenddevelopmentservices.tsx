@@ -1,7 +1,7 @@
 import Image from 'next/image'
-import { CardsCodeAnimation } from '@/components/cards-code-animation'
+import { CardsCodeAnimation } from '@/components/cards-codeanimation'
 
-export function Endtoenddevelopmentservices() {
+export function EndToEndDevelopmentServices(props: any) {
   return (
   <div>
     <div className="absolute w-[200px] h-[200px] top-0 left-0">

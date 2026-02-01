@@ -1,7 +1,7 @@
 import Image from 'next/image'
-import { CardsAnimatedBorderButton } from '@/components/cards-animated-border-button'
+import { CardsAnimatedBorderButton } from '@/components/cards-animatedborderbutton'
 
-export function Dataanalysticcard() {
+export function DataAnalysticCard(props: any) {
   return (
   <div>
     <div className="absolute w-[493px] h-fit top-0 left-0 rounded-xl flex flex-row gap-2.5 justify-center items-center py-2.5 px-2.5">

@@ -1,16 +1,16 @@
 import Image from 'next/image'
 import { NavigationNavbar } from '@/components/navigation-navbar'
 import { ElementsBadge } from '@/components/elements-badge'
-import { CtaButton } from '@/components/cta-button'
+import { CTAButton } from '@/components/ctabutton'
 import { ParticlesBackground } from '@/components/particles-background'
 import { AnalyzeCard } from '@/components/analyze-card'
-import { ElementsDevelopmentCard } from '@/components/elements-development-card'
-import { MaintenanceCard } from '@/components/maintenance-card'
+import { DevelopmentCard } from '@/components/developmentcard'
+import { MaintenanceCard } from '@/components/maintenancecard'
 import { BusinessChatbot } from '@/components/business-chatbot'
-import { EndToEndDevelopmentServices } from '@/components/end-to-end-development-services'
-import { LlmDevelopment } from '@/components/llm-development'
-import { DataAnalysticCard } from '@/components/data-analystic-card'
-import { AiConsultingCard } from '@/components/ai-consulting-card'
+import { EndToEndDevelopmentServices } from '@/components/endtoenddevelopmentservices'
+import { LLMDevelopment } from '@/components/llmdevelopment'
+import { DataAnalysticCard } from '@/components/dataanalysticcard'
+import { AiConsultingCard } from '@/components/aiconsultingcard'
 import { Accordion } from '@/components/accordion'
 import { FooterFooter } from '@/components/footer-footer'
 import { FooterCopyright } from '@/components/footer-copyright'
@@ -37,7 +37,7 @@ export default function HomePage() {
             </p>
           </div>
           <div className="w-fit h-fit rounded-[0px] flex flex-row gap-[15px] justify-center items-center py-0 px-0">
-            <CtaButton
+            <CTAButton
   NAbd17i0q="Our Services"
   ae3kdG3b0="rgb(81, 47, 235)"
   IHCtoN6iC
@@ -92,7 +92,7 @@ export default function HomePage() {
           </div>
         </div>
         <div className="w-[364px] h-fit bg-[var(--color-card-background)] rounded-[30px] flex flex-col gap-5 justify-center items-center py-5 px-[30px]">
-          <ElementsDevelopmentCard />
+          <DevelopmentCard />
           <div className="w-full h-fit flex flex-col gap-2.5 justify-center items-center">
             <p className="w-full h-fit">Development &amp; Test</p>
             <p className="w-full h-fit">
@@ -146,7 +146,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="w-[378px] h-fit bg-[var(--color-card-background)] rounded-[10px] flex flex-col gap-5 justify-center items-center py-[53px] px-[30px]">
-            <LlmDevelopment />
+            <LLMDevelopment />
             <div className="w-full h-fit flex flex-col gap-2.5 justify-center items-center">
               <p className="w-full h-fit">LLM Development</p>
               <p className="w-full h-fit">
@@ -280,7 +280,7 @@ export default function HomePage() {
           </p>
         </div>
         <div className="w-full h-fit flex flex-col gap-2.5 justify-center items-center">
-          <CtaButton
+          <CTAButton
   NAbd17i0q="Get in touch"
   ae3kdG3b0="rgb(81, 47, 235)"
   IHCtoN6iC

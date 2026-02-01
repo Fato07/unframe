@@ -1,7 +1,7 @@
 import Image from 'next/image'
-import { CardsCodeAnimation } from '@/components/cards-code-animation'
+import { CardsCodeAnimation } from '@/components/cards-codeanimation'
 
-export function Developmentcard() {
+export function DevelopmentCard(props: any) {
   return (
   <div>
     <div className="absolute w-[200px] h-[180px] top-0 left-0 bg-[var(--color-cards-ui-2)] rounded-lg flex flex-col gap-[5px] justify-start items-center">

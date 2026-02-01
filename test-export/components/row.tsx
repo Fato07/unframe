@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export function Row() {
+export function Row(props: any) {
   return (
   <div>
     <div className="absolute w-[400px] h-fit top-0 left-0 bg-[var(--color-card-background)] rounded-[20px] flex flex-col gap-4 justify-start items-start py-[18px] px-5">

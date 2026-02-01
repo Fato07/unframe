@@ -1,8 +1,8 @@
 import Image from 'next/image'
-import { CtaButton } from '@/components/cta-button'
-import { PricingPlanFeatures } from '@/components/pricing-plan-features'
+import { CTAButton } from '@/components/ctabutton'
+import { PricingPlanfeatures } from '@/components/pricing-planfeatures'
 
-export function PricingPlan() {
+export function PricingPlan(props: any) {
   return (
   <div>
     <div className="absolute w-[1120px] h-fit top-0 left-0 flex flex-col gap-[30px] justify-center items-center">
@@ -31,7 +31,7 @@ export function PricingPlan() {
               Essential tools and features for starting your journey with ease.
             </p>
           </div>
-          <CtaButton
+          <CTAButton
   NAbd17i0q="Go with this plan"
   ae3kdG3b0="rgb(81, 47, 235)"
   IHCtoN6iC
@@ -39,11 +39,11 @@ export function PricingPlan() {
   yt52UU3wF={15}
  />
           <div className="absolute w-full h-fit top-[172px] left-0 flex flex-col gap-2.5 justify-center items-center">
-            <PricingPlanFeatures l_U6iR6Sk="Baisc workflow automation" />
-            <PricingPlanFeatures l_U6iR6Sk="Basic chatbot development" />
-            <PricingPlanFeatures l_U6iR6Sk="60 content request" />
-            <PricingPlanFeatures l_U6iR6Sk="E-mail support" />
-            <PricingPlanFeatures l_U6iR6Sk="1 consultation a month" />
+            <PricingPlanfeatures l_U6iR6Sk="Baisc workflow automation" />
+            <PricingPlanfeatures l_U6iR6Sk="Basic chatbot development" />
+            <PricingPlanfeatures l_U6iR6Sk="60 content request" />
+            <PricingPlanfeatures l_U6iR6Sk="E-mail support" />
+            <PricingPlanfeatures l_U6iR6Sk="1 consultation a month" />
           </div>
         </div>
         <div className="absolute w-[353px] h-fit top-0 left-0 rounded-[30px] flex flex-col gap-[35px] justify-center items-center p-[30px]">
@@ -60,7 +60,7 @@ export function PricingPlan() {
               Advanced capabilities designed to meet growing business needs.
             </p>
           </div>
-          <CtaButton
+          <CTAButton
   NAbd17i0q="Go with this plan"
   ae3kdG3b0="rgb(81, 47, 235)"
   IHCtoN6iC
@@ -68,11 +68,11 @@ export function PricingPlan() {
   yt52UU3wF={15}
  />
           <div className="absolute w-full h-fit top-[172px] left-0 flex flex-col gap-2.5 justify-center items-center">
-            <PricingPlanFeatures l_U6iR6Sk="Advance workflow automation" />
-            <PricingPlanFeatures l_U6iR6Sk="Advance chatbot development" />
-            <PricingPlanFeatures l_U6iR6Sk="150 content request" />
-            <PricingPlanFeatures l_U6iR6Sk="E-mail support" />
-            <PricingPlanFeatures l_U6iR6Sk="2 consultation a month" />
+            <PricingPlanfeatures l_U6iR6Sk="Advance workflow automation" />
+            <PricingPlanfeatures l_U6iR6Sk="Advance chatbot development" />
+            <PricingPlanfeatures l_U6iR6Sk="150 content request" />
+            <PricingPlanfeatures l_U6iR6Sk="E-mail support" />
+            <PricingPlanfeatures l_U6iR6Sk="2 consultation a month" />
           </div>
         </div>
         <div className="absolute w-[354px] h-fit top-0 right-0 rounded-[30px] flex flex-col gap-[35px] justify-center items-center p-[30px]">
@@ -89,7 +89,7 @@ export function PricingPlan() {
               Comprehensive solutions tailored for large-scale business success.
             </p>
           </div>
-          <CtaButton
+          <CTAButton
   NAbd17i0q="Schedule a call"
   ae3kdG3b0="rgb(81, 47, 235)"
   IHCtoN6iC
@@ -97,11 +97,11 @@ export function PricingPlan() {
   yt52UU3wF={15}
  />
           <div className="absolute w-full h-fit top-[172px] left-0 flex flex-col gap-2.5 justify-center items-center">
-            <PricingPlanFeatures l_U6iR6Sk="Custom workflow automation" />
-            <PricingPlanFeatures l_U6iR6Sk="Custom chatbot development" />
-            <PricingPlanFeatures l_U6iR6Sk="Unlimited content request" />
-            <PricingPlanFeatures l_U6iR6Sk="24hr priority support" />
-            <PricingPlanFeatures l_U6iR6Sk="Unlimited consultation a month" />
+            <PricingPlanfeatures l_U6iR6Sk="Custom workflow automation" />
+            <PricingPlanfeatures l_U6iR6Sk="Custom chatbot development" />
+            <PricingPlanfeatures l_U6iR6Sk="Unlimited content request" />
+            <PricingPlanfeatures l_U6iR6Sk="24hr priority support" />
+            <PricingPlanfeatures l_U6iR6Sk="Unlimited consultation a month" />
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export function CardsCodeanimation() {
+export function CardsCodeAnimation(props: any) {
   return (
   <div>
     <div className="absolute w-[180px] h-fit top-0 left-0 flex flex-row gap-2.5 justify-center items-center">

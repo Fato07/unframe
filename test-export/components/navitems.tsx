@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export function Navitems() {
+export function Navitems(props: any) {
   return (
   <div>
     <div className="absolute w-fit h-fit top-0 left-0 rounded flex flex-row gap-2.5 justify-center items-center py-[5px] px-2">

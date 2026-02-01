@@ -1,7 +1,7 @@
 import Image from 'next/image'
-import { CardsVoiceAnimation } from '@/components/cards-voice-animation'
+import { CardsVoiceAnimation } from '@/components/cards-voiceanimation'
 
-export function AIconsultingcard() {
+export function AiConsultingCard(props: any) {
   return (
   <div>
     <div className="absolute w-[492px] h-fit top-0 left-0 rounded-xl flex flex-row gap-2.5 justify-center items-center py-2.5 px-2.5">

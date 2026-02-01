@@ -1,7 +1,7 @@
 import Image from 'next/image'
-import { CardsAnimatedBorderButton } from '@/components/cards-animated-border-button'
+import { CardsAnimatedBorderButton } from '@/components/cards-animatedborderbutton'
 
-export function LLMDevelopment() {
+export function LLMDevelopment(props: any) {
   return (
   <div>
     <div className="absolute w-[303px] h-[280px] top-0 left-0 rounded-xl flex flex-col gap-2.5 justify-center items-center">

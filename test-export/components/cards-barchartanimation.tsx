@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export function CardsBarchartanimation() {
+export function CardsBarChartAnimation(props: any) {
   return (
   <div>
     <div className="absolute w-fit h-[50px] top-0 left-0 flex flex-row gap-[7px] justify-center items-end">

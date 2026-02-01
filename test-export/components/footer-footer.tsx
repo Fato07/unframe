@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export function FooterFooter() {
+export function FooterFooter(props: any) {
   return (
   <div>
     <div className="absolute w-[1200px] h-fit top-0 left-0 rounded-[0px] flex flex-col gap-[60px] justify-center items-center py-16 px-10">
@@ -59,15 +59,15 @@ export function FooterFooter() {
           <div className="absolute w-full h-fit top-0 left-0 flex flex-row gap-2.5 justify-start items-start">
             <div className="absolute w-full h-fit flex flex-col gap-2.5 justify-center items-start">
               <p className="absolute w-fit h-fit top-1.5 left-[231px]">Sections</p>
-              <p className="absolute w-fit h-fit" href="/#process">Process</p>
-              <p className="absolute w-fit h-fit" href="/#services">Services</p>
-              <p className="absolute w-fit h-fit" href="/#benefits">Benefits</p>
-              <p className="absolute w-fit h-fit" href="/#contact">Contact</p>
+              <a className="absolute w-fit h-fit" href="/#process">Process</a>
+              <a className="absolute w-fit h-fit" href="/#services">Services</a>
+              <a className="absolute w-fit h-fit" href="/#benefits">Benefits</a>
+              <a className="absolute w-fit h-fit" href="/#contact">Contact</a>
             </div>
             <div className="absolute w-full h-fit flex flex-col gap-2.5 justify-center items-start">
               <p className="absolute w-fit h-fit top-1.5 left-[231px]">Pages</p>
-              <p className="absolute w-fit h-fit" href="/">Home</p>
-              <p className="absolute w-fit h-fit top-0 left-0" href="/blog">Blog</p>
+              <a className="absolute w-fit h-fit" href="/">Home</a>
+              <a className="absolute w-fit h-fit top-0 left-0" href="/blog">Blog</a>
             </div>
           </div>
         </div>

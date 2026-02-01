@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export function Testimonialcard() {
+export function Testimonialcard(props: any) {
   return (
   <div>
     <div className="absolute w-[353px] h-fit top-0 left-0 bg-[var(--color-card-background)] rounded-[30px] flex flex-col gap-5 justify-center items-start py-5 px-[30px]">

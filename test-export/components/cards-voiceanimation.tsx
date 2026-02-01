@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export function CardsVoiceanimation() {
+export function CardsVoiceAnimation(props: any) {
   return (
   <div>
     <div className="absolute w-fit h-fit top-0 left-0 flex flex-row gap-0.5 justify-center items-center">

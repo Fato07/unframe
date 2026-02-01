@@ -1,10 +1,10 @@
 import Image from 'next/image'
 import { NavigationNavbar } from '@/components/navigation-navbar'
 import { ElementsBadge } from '@/components/elements-badge'
-import { CtaButton } from '@/components/cta-button'
+import { CTAButton } from '@/components/ctabutton'
 import { FooterFooter } from '@/components/footer-footer'
 
-export default function 404Page() {
+export default function Page404Page() {
   return (
   <div className="absolute w-[1200px] h-fit top-0 left-0 bg-[var(--color-background)] flex flex-col justify-start items-center">
     <NavigationNavbar />
@@ -25,7 +25,7 @@ export default function 404Page() {
             </p>
           </div>
           <div className="absolute w-fit h-fit top-0 left-0 rounded-[0px] flex flex-row gap-[15px] justify-center items-center py-0 px-0">
-            <CtaButton
+            <CTAButton
   NAbd17i0q="Let's go home"
   ae3kdG3b0="rgb(81, 47, 235)"
   IHCtoN6iC

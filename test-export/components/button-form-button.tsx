@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export function ButtonFormButton() {
+export function ButtonFormButton(props: any) {
   return (
   <div>
     <div className="absolute w-60 h-10 top-0 left-0 bg-[var(--color-blue)] rounded-lg flex flex-row justify-center items-center">

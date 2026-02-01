@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export function NavigationHamburger() {
+export function NavigationHamburger(props: any) {
   return (
   <div>
     <div className="absolute w-[31px] h-[31px] top-0 left-0">

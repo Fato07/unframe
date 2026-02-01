@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export function FooterCopyright() {
+export function FooterCopyright(props: any) {
   return (
   <div>
     <div className="absolute w-[1200px] h-fit top-0 left-0 rounded-[0px] flex flex-col gap-[60px] justify-center items-center py-[25px] px-10">

@@ -1,7 +1,7 @@
 import Image from 'next/image'
-import { CardsAnimatedBorderButton } from '@/components/cards-animated-border-button'
+import { CardsAnimatedBorderButton } from '@/components/cards-animatedborderbutton'
 
-export function Contentcreationcard() {
+export function ContentCreationCard(props: any) {
   return (
   <div>
     <div className="absolute w-[304px] h-[280px] top-0 left-0 rounded-xl flex flex-row gap-2.5 justify-center items-center">

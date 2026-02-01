@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export function PricingPlanfeatures() {
+export function PricingPlanfeatures(props: any) {
   return (
   <div>
     <div className="absolute w-[293px] h-fit top-0 left-0 flex flex-row gap-2.5 justify-center items-center">

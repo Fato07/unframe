@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export function CardsAnimatedborderbutton() {
+export function CardsAnimatedBorderButton(props: any) {
   return (
   <div>
     <div className="absolute w-fit h-fit top-0 left-0 bg-[rgba(255,_255,_255,_0.05)] rounded-lg flex flex-row gap-2.5 justify-between items-center py-2.5 px-5">

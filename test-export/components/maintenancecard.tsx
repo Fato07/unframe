@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export function Maintenancecard() {
+export function MaintenanceCard(props: any) {
   return (
   <div>
     <div className="absolute w-[280px] h-[180px] top-0 left-0 bg-[var(--color-cards-ui-2)] rounded-lg flex flex-col gap-[5px] justify-start items-center">
