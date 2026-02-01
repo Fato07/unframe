@@ -18,6 +18,9 @@ export * from './transformer/index.js'
 // Generator
 export * from './generator/index.js'
 
+// Analyzer
+export * from './analyzer/index.js'
+
 // High-level conversion API
 export {
   convert,

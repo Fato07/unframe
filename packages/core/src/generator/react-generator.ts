@@ -231,21 +231,26 @@ export class ReactGenerator {
     const indent = this.getIndent(depth)
     const attrIndent = this.getIndent(depth + 1)
 
-    // Extract Tailwind classes
-    const extracted = this.styleExtractor.extract(element.styles)
-    let className = classesToString(extracted)
-
-    // Add responsive styles
-    if (element.responsiveStyles?.tablet) {
-      const tabletExtracted = this.styleExtractor.extract(element.responsiveStyles.tablet)
-      const tabletClasses = tabletExtracted.classes.map(c => `md:${c.class}`).join(' ')
-      if (tabletClasses) className += ` ${tabletClasses}`
-    }
-
-    if (element.responsiveStyles?.mobile) {
-      const mobileExtracted = this.styleExtractor.extract(element.responsiveStyles.mobile)
-      const mobileClasses = mobileExtracted.classes.map(c => `sm:${c.class}`).join(' ')
-      if (mobileClasses) className += ` ${mobileClasses}`
+    // Extract Tailwind classes with responsive support
+    // Uses mobile-first approach: base → md: → lg:
+    let className: string
+    let extracted: ExtractedStyles | undefined
+    
+    if (element.responsiveStyles?.tablet || element.responsiveStyles?.mobile) {
+      // Has responsive overrides - use the smart responsive extractor
+      className = extractElementResponsiveClasses(
+        this.styleExtractor,
+        element.styles,
+        element.responsiveStyles
+      )
+      // Also extract for custom properties (inline styles)
+      if (this.config.inlineStyles) {
+        extracted = this.styleExtractor.extract(element.styles)
+      }
+    } else {
+      // Desktop only - use standard extraction
+      extracted = this.styleExtractor.extract(element.styles)
+      className = classesToString(extracted)
     }
 
     if (className.trim()) {
@@ -253,7 +258,7 @@ export class ReactGenerator {
     }
 
     // Handle custom inline styles for arbitrary values not in Tailwind
-    if (this.config.inlineStyles && extracted.customProperties.size > 0) {
+    if (this.config.inlineStyles && extracted && extracted.customProperties.size > 0) {
       const styleObj = Array.from(extracted.customProperties.entries())
         .map(([key, value]) => `${this.toCamelCase(key)}: '${value}'`)
         .join(', ')

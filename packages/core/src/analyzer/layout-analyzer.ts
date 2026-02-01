@@ -180,25 +180,25 @@ function boxesOverlap(
   const overlapTop = Math.max(a.y, b.y)
   const overlapBottom = Math.min(a.y + a.height, b.y + b.height)
 
-  // No overlap if one is completely to the left/right/above/below the other
   if (options.includeEdgeOverlaps) {
-    // Include edge touching as overlap
+    // Include edge touching as overlap (edges exactly touching counts)
+    // Boxes touch if overlapLeft <= overlapRight AND overlapTop <= overlapBottom
     if (overlapLeft > overlapRight || overlapTop > overlapBottom) {
       return false
     }
+    // When including edges, we just need them to touch (overlap area can be 0)
+    return true
   } else {
     // Strict overlap (not just touching edges)
     if (overlapLeft >= overlapRight || overlapTop >= overlapBottom) {
       return false
     }
+    // Calculate overlap area
+    const overlapWidth = overlapRight - overlapLeft
+    const overlapHeight = overlapBottom - overlapTop
+    const overlapArea = overlapWidth * overlapHeight
+    return overlapArea >= options.minOverlapArea
   }
-
-  // Calculate overlap area
-  const overlapWidth = overlapRight - overlapLeft
-  const overlapHeight = overlapBottom - overlapTop
-  const overlapArea = overlapWidth * overlapHeight
-
-  return overlapArea >= options.minOverlapArea
 }
 
 /**
