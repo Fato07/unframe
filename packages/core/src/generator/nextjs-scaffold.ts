@@ -443,7 +443,10 @@ export default function RootLayout({
     const generated = this.generator.generateComponent(component)
     const content = this.generator.generateFile(generated)
 
-    const fileName = this.toKebabCase(component.name)
+    // Normalize to PascalCase first (same as toComponentName in react-generator),
+    // then convert to kebab-case. This ensures file names match import paths.
+    const normalizedName = this.toPascalCase(component.name)
+    const fileName = this.toKebabCase(normalizedName)
     const filePath = `components/${fileName}.${ext}`
 
     return {
@@ -452,6 +455,20 @@ export default function RootLayout({
       type: ext === 'tsx' ? 'tsx' : 'jsx',
       description: `Component: ${component.originalName}`,
     }
+  }
+  
+  private toPascalCase(str: string): string {
+    // Same logic as react-generator's toComponentName
+    // "cta-button" -> "CtaButton"
+    // "elements/badge" -> "ElementsBadge"
+    let cleaned = str
+      .replace(/\//g, '')
+      .replace(/[\s-]+/g, '')
+    
+    // Ensure first character is uppercase
+    cleaned = cleaned.charAt(0).toUpperCase() + cleaned.slice(1)
+    
+    return cleaned
   }
 
   private generateCnUtil(): OutputFile {
@@ -579,6 +596,11 @@ export function cn(...inputs: ClassValue[]) {
 
   private toKebabCase(str: string): string {
     return str
+      // Handle sequences of uppercase (acronyms) followed by uppercase+lowercase
+      // "CTAButton" -> "CTA-Button" -> "cta-button"
+      .replace(/([A-Z]+)([A-Z][a-z])/g, '$1-$2')
+      // Handle lowercase followed by uppercase
+      // "ctaButton" -> "cta-Button"
       .replace(/([a-z])([A-Z])/g, '$1-$2')
       .replace(/\s+/g, '-')
       .toLowerCase()

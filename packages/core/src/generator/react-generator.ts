@@ -682,6 +682,11 @@ export class ReactGenerator {
 
   private toKebabCase(str: string): string {
     return str
+      // Handle sequences of uppercase (acronyms) followed by uppercase+lowercase
+      // "CTAButton" -> "CTA-Button" -> "cta-button"
+      .replace(/([A-Z]+)([A-Z][a-z])/g, '$1-$2')
+      // Handle lowercase followed by uppercase
+      // "ctaButton" -> "cta-Button"
       .replace(/([a-z])([A-Z])/g, '$1-$2')
       .replace(/\s+/g, '-')
       .toLowerCase()
