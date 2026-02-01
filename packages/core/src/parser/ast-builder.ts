@@ -180,7 +180,7 @@ export class ASTBuilder {
    * @param node The Framer node to convert
    * @param parentLayout The layout type of the parent element (stack, grid, or none)
    */
-  buildElement(node: FramerNode, parentLayout: 'stack' | 'grid' | 'none' = 'none'): ElementAST {
+  buildElement(node: FramerNode, parentLayout: 'stack' | 'grid' | 'none' | 'page-root' = 'none'): ElementAST {
     const elementType = this.inferElementType(node)
     
     // Determine current element's layout type for passing to children
@@ -290,18 +290,20 @@ export class ASTBuilder {
   // ============================================
 
   private extractBreakpoints(node: FramerNode): PageAST['breakpoints'] {
+    // Page root elements should be treated as if they're in a flow layout
+    // They should NOT have absolute positioning - they ARE the root container
     const breakpoints: PageAST['breakpoints'] = {
-      desktop: this.buildElement(node),
+      desktop: this.buildElement(node, 'page-root'),
     }
 
     // Look for Desktop, Tablet, Mobile children
     for (const child of node.children) {
       if (child.type === 'Desktop' || child.name === 'Desktop') {
-        breakpoints.desktop = this.buildElement(child)
+        breakpoints.desktop = this.buildElement(child, 'page-root')
       } else if (child.type === 'Tablet' || child.name === 'Tablet') {
-        breakpoints.tablet = this.buildElement(child)
+        breakpoints.tablet = this.buildElement(child, 'page-root')
       } else if (child.type === 'Mobile' || child.name === 'Mobile') {
-        breakpoints.mobile = this.buildElement(child)
+        breakpoints.mobile = this.buildElement(child, 'page-root')
       }
     }
 
@@ -347,18 +349,20 @@ export class ASTBuilder {
     }
   }
 
-  private extractStyles(attrs: FramerNodeAttributes, parentLayout: 'stack' | 'grid' | 'none' = 'none'): StyleRule[] {
+  private extractStyles(attrs: FramerNodeAttributes, parentLayout: 'stack' | 'grid' | 'none' | 'page-root' = 'none'): StyleRule[] {
     const styles: StyleRule[] = []
 
-    // Determine if this element is a child of a flex/grid container
-    // Children of stack (flex) or grid containers should NOT have absolute positioning
-    // because their layout is controlled by the parent's flex/grid system
+    // Determine if this element should skip absolute positioning:
+    // 1. Children of stack (flex) or grid containers - layout controlled by parent
+    // 2. Page root elements - they ARE the root, shouldn't be absolutely positioned
     const isFlexOrGridChild = parentLayout === 'stack' || parentLayout === 'grid'
+    const isPageRoot = parentLayout === 'page-root'
+    const skipAbsolutePositioning = isFlexOrGridChild || isPageRoot
 
-    // Position - only add if NOT a flex/grid child, or if explicitly set to something other than absolute
+    // Position - only add if NOT skipping absolute positioning, or if explicitly set to something other than absolute
     if (attrs.position && attrs.position !== 'relative') {
-      // Skip absolute positioning for flex/grid children
-      if (!(isFlexOrGridChild && attrs.position === 'absolute')) {
+      // Skip absolute positioning for flex/grid children and page roots
+      if (!(skipAbsolutePositioning && attrs.position === 'absolute')) {
         styles.push({ property: 'position', value: attrs.position as string })
       }
     }
@@ -377,10 +381,11 @@ export class ASTBuilder {
       styles.push({ property: 'max-width', value: attrs.maxWidth as string })
     }
 
-    // Positioning (absolute/fixed) - SKIP for flex/grid children
+    // Positioning (absolute/fixed) - SKIP for flex/grid children and page roots
     // These properties only make sense for absolutely/fixed positioned elements
     // Flex/grid children are positioned by the parent's layout system
-    if (!isFlexOrGridChild) {
+    // Page roots are the container itself, not positioned within anything
+    if (!skipAbsolutePositioning) {
       if (attrs.top !== undefined) {
         styles.push({ property: 'top', value: attrs.top as string })
       }

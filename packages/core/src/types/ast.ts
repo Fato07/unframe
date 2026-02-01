@@ -117,7 +117,7 @@ export interface ElementAST {
   
   // Parent layout context - used to determine if absolute positioning should be skipped
   // Children of stack/grid containers should NOT have absolute positioning
-  parentLayout?: 'stack' | 'grid' | 'none';
+  parentLayout?: 'stack' | 'grid' | 'none' | 'page-root';
 }
 
 export interface TextAST {
