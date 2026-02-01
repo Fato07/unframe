@@ -473,6 +473,11 @@ export class ReactGenerator {
       return `motion.${element.type === 'component' ? 'div' : element.type}`
     }
 
+    // If element has href, it should be an <a> tag regardless of original type
+    if (element.props.href) {
+      return 'a'
+    }
+
     switch (element.type) {
       case 'div':
       case 'span':
@@ -548,23 +553,39 @@ export class ReactGenerator {
 
   private pageNameToComponentName(name: string): string {
     // "Blog Post" -> "BlogPostPage"
-    return name
+    // "404" -> "Page404" (numbers can't start function names)
+    let result = name
       .split(/[\s-]+/)
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join('') + 'Page'
+    
+    // If name starts with a number, prefix with "Page"
+    if (/^\d/.test(result)) {
+      result = 'Page' + result
+    }
+    
+    return result
   }
 
   private toComponentName(name: string): string {
-    // Ensure component name is valid JSX (starts with uppercase)
+    // Ensure component name is valid JSX (starts with uppercase letter)
     // "NavigationNavbar" -> "NavigationNavbar"
     // "vTxPF9bF_" -> "VTxPF9bF_"
     // "elements/badge" -> "ElementsBadge"
-    const cleaned = name
+    // "404Button" -> "Component404Button" (numbers can't start identifiers)
+    let cleaned = name
       .replace(/\//g, '')
       .replace(/[\s-]+/g, '')
     
     // Ensure first character is uppercase
-    return cleaned.charAt(0).toUpperCase() + cleaned.slice(1)
+    cleaned = cleaned.charAt(0).toUpperCase() + cleaned.slice(1)
+    
+    // If still starts with a number, prefix with "Component"
+    if (/^\d/.test(cleaned)) {
+      cleaned = 'Component' + cleaned
+    }
+    
+    return cleaned
   }
 }
 

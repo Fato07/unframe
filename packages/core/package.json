@@ -8,24 +8,24 @@
   "license": "MIT",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     },
     "./parser": {
-      "import": "./dist/parser/index.mjs",
-      "require": "./dist/parser/index.js",
-      "types": "./dist/parser/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
     },
     "./transformer": {
-      "import": "./dist/transformer/index.mjs",
-      "require": "./dist/transformer/index.js",
-      "types": "./dist/transformer/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
     },
     "./generator": {
-      "import": "./dist/generator/index.mjs",
-      "require": "./dist/generator/index.js",
-      "types": "./dist/generator/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
     }
   },
   "scripts": {
