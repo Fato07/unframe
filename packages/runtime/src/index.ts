@@ -5,7 +5,8 @@
  * This embeds Framer's runtime to ensure pixel-perfect rendering.
  */
 
-import { createContext, useContext, ReactNode } from 'react'
+import * as React from 'react'
+import { createContext, useContext, ReactNode, ComponentType } from 'react'
 
 // Re-export framer-motion for animations
 export * from 'framer-motion'
@@ -29,26 +30,28 @@ const UnframeContext = createContext<UnframeConfig>({})
 /**
  * Provider for Unframe configuration
  */
+export interface UnframeProviderProps extends UnframeConfig {
+  children: ReactNode
+}
+
 export function UnframeProvider({
   children,
   assetBasePath = '/framer',
   locale,
   navigate,
   darkMode = false,
-}: UnframeConfig & { children: ReactNode }) {
-  return (
-    <UnframeContext.Provider value={{ assetBasePath, locale, navigate, darkMode }}>
-      <div className={darkMode ? 'dark' : ''}>
-        {children}
-      </div>
-    </UnframeContext.Provider>
+}: UnframeProviderProps): React.ReactElement {
+  return React.createElement(
+    UnframeContext.Provider,
+    { value: { assetBasePath, locale, navigate, darkMode } },
+    React.createElement('div', { className: darkMode ? 'dark' : '' }, children)
   )
 }
 
 /**
  * Hook to access Unframe configuration
  */
-export function useUnframe() {
+export function useUnframe(): UnframeConfig {
   return useContext(UnframeContext)
 }
 
@@ -64,21 +67,21 @@ export interface ResponsiveProps<V extends string = string> {
     lg?: V      // Desktop (1024px+)
   }
   /** The component to render */
-  component: React.ComponentType<{ variant?: V }>
+  component: ComponentType<{ variant?: V } & Record<string, unknown>>
   /** Additional props to pass to the component */
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export function Responsive<V extends string>({
   variants,
   component: Component,
   ...props
-}: ResponsiveProps<V>) {
+}: ResponsiveProps<V>): React.ReactElement {
   // This will be enhanced with actual breakpoint detection
   // For now, render desktop variant
   const variant = variants.lg || variants.md || variants.base
   
-  return <Component variant={variant} {...props} />
+  return React.createElement(Component, { variant, ...props })
 }
 
 /**
@@ -104,7 +107,7 @@ export const globalStyles = `
 /**
  * Type helper for Framer component props
  */
-export type FramerComponentProps<P = {}> = P & {
+export type FramerComponentProps<P = Record<string, unknown>> = P & {
   className?: string
   style?: React.CSSProperties
 }
