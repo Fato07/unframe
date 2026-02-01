@@ -108,6 +108,23 @@ export class NextjsScaffolder {
     files.push(this.generateGlobalCss(ast.styles))
     files.push(this.generatePostCssConfig())
 
+    // Build component name map for proper import resolution
+    // Maps componentRef (ID) -> normalized component name
+    const componentNameMap = new Map<string, string>()
+    for (const component of ast.components) {
+      componentNameMap.set(component.id, component.name)
+    }
+    
+    // Recreate generator with component name map for proper import resolution
+    this.generator = createReactGenerator({
+      typescript: this.config.codeStyle.typescript,
+      semicolons: this.config.codeStyle.semicolons,
+      singleQuote: this.config.codeStyle.singleQuote,
+      indent: this.config.codeStyle.tabWidth,
+      useMotion: this.config.features.animations,
+      componentNameMap,
+    })
+
     // Generate layout
     files.push(this.generateRootLayout(ast))
 

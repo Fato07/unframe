@@ -40,6 +40,8 @@ export interface GeneratorConfig {
   semicolons: boolean
   /** Generate inline styles for custom values or className only */
   inlineStyles: boolean
+  /** Map from componentRef (ID) to component name - used for resolving imports */
+  componentNameMap?: Map<string, string>
 }
 
 export interface GeneratedComponent {
@@ -195,10 +197,15 @@ export class ReactGenerator {
   private generateComponentInstance(element: ElementAST, depth: number): string {
     const indent = this.getIndent(depth)
     
-    // Extract component name from ref or element name
-    // Use element.name as component name (e.g., "NavigationNavbar")
-    // If it's just an ID, convert to a valid component name
-    let componentName = element.name || element.componentRef!.split('/').pop() || 'Component'
+    // Look up actual component name from componentRef if available
+    // This ensures import paths match the actual component file names
+    let componentName: string
+    if (element.componentRef && this.config.componentNameMap?.has(element.componentRef)) {
+      componentName = this.config.componentNameMap.get(element.componentRef)!
+    } else {
+      // Fallback: use element.name or componentRef
+      componentName = element.name || element.componentRef!.split('/').pop() || 'Component'
+    }
     
     // Ensure component name starts with uppercase (JSX requirement)
     componentName = this.toComponentName(componentName)
