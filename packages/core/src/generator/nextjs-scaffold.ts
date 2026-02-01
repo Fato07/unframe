@@ -548,8 +548,8 @@ export function cn(...inputs: ClassValue[]) {
     }
 
     return Array.from(fonts.entries()).map(([name, weights]) => ({
-      importName: name.replace(/\s+/g, '_'),
-      varName: name.toLowerCase().replace(/\s+/g, ''),
+      importName: name.replace(/[\s-]+/g, '_'),
+      varName: name.toLowerCase().replace(/[\s-]+/g, ''),
       weight: weights.size > 0 ? Array.from(weights) : undefined,
     }))
   }
@@ -569,7 +569,12 @@ export function cn(...inputs: ClassValue[]) {
   private extractFontName(value: string): string | null {
     // Extract from "'Outfit', sans-serif" or "Outfit"
     const match = value.match(/'([^']+)'/) || value.match(/^(\w+)/)
-    return match ? match[1] : null
+    if (!match) return null
+    
+    // Handle font variants like "Inter-Bold" -> "Inter"
+    // The weight is handled separately via font-weight CSS property
+    const fontName = match[1].split('-')[0]
+    return fontName
   }
 
   private toKebabCase(str: string): string {
