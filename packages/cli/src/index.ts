@@ -22,6 +22,7 @@ import { Command } from 'commander'
 import { createRequire } from 'node:module'
 import { initCommand } from './commands/init.js'
 import { exportCommand } from './commands/export.js'
+import { createSyncCommand } from './commands/sync.js'
 
 // Load version from package.json
 const require = createRequire(import.meta.url)
@@ -86,6 +87,12 @@ Project ID:
   .action(async (options) => {
     await exportCommand(options)
   })
+
+// ============================================
+// Sync Command (NEW - Unframer-style integration)
+// ============================================
+
+program.addCommand(createSyncCommand())
 
 // ============================================
 // Parse Arguments
