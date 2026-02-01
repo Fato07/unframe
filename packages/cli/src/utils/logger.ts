@@ -154,15 +154,18 @@ export class Logger {
    */
   exportComplete(fileCount: number, outputDir: string): void {
     console.log()
-    console.log(chalk.green.bold('  ✓ Export complete!'))
+    console.log(chalk.green.bold('  ✅ Export complete!'))
     console.log()
     console.log(`    ${chalk.gray('Files generated:')} ${chalk.white(fileCount)}`)
     console.log(`    ${chalk.gray('Output directory:')} ${chalk.cyan(outputDir)}`)
     console.log()
-    console.log(chalk.gray('  Next steps:'))
-    console.log(chalk.white(`    cd ${outputDir}`))
-    console.log(chalk.white('    npm install'))
-    console.log(chalk.white('    npm run dev'))
+    console.log(chalk.bold.white('  Next steps:'))
+    console.log()
+    console.log(chalk.cyan(`    cd ${outputDir}`))
+    console.log(chalk.cyan('    npm install'))
+    console.log(chalk.cyan('    npm run dev'))
+    console.log()
+    console.log(chalk.gray('  Your site will be at ') + chalk.cyan.underline('http://localhost:3000'))
     console.log()
   }
 }

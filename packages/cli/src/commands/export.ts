@@ -19,6 +19,7 @@ import {
 } from '@unframe/core'
 import { loadConfig, mergeConfig, type ResolvedConfig } from '../utils/config.js'
 import { createLogger, type Logger } from '../utils/logger.js'
+import { runSystemChecks, parseFramerUrl } from '../utils/system.js'
 
 // ============================================
 // Types
@@ -67,6 +68,9 @@ export async function exportCommand(options: ExportOptions): Promise<void> {
     logger.banner()
     logger.header('Export Framer Project')
     logger.newline()
+
+    // Step 0: Check system requirements
+    checkSystemRequirements(ctx)
 
     // Step 1: Load configuration
     await loadConfiguration(ctx, options)
@@ -128,6 +132,23 @@ export async function exportCommand(options: ExportOptions): Promise<void> {
 // Export Steps
 // ============================================
 
+function checkSystemRequirements(ctx: ExportContext): void {
+  const { logger } = ctx
+  
+  logger.debug('Checking system requirements...')
+  
+  const { checks, allPassed } = runSystemChecks()
+  
+  if (!allPassed) {
+    const failed = checks.filter(c => !c.ok)
+    throw new Error(
+      `Missing system requirements:\n${failed.map(c => `  - ${c.error}`).join('\n')}`
+    )
+  }
+  
+  logger.debug('System checks passed:', checks.map(c => `${c.name}@${c.version}`).join(', '))
+}
+
 async function loadConfiguration(ctx: ExportContext, options: ExportOptions): Promise<void> {
   ctx.spinner.start('Loading configuration...')
 
@@ -169,6 +190,21 @@ function validateConfig(ctx: ExportContext): void {
     throw new Error(
       'No project specified. Use --project <id> or configure in .unframerc'
     )
+  }
+
+  // Validate project ID or URL format
+  if (config.project) {
+    const parsed = parseFramerUrl(config.project)
+    
+    if (!parsed.isValid) {
+      throw new Error(parsed.error || 'Invalid project ID format')
+    }
+    
+    // Normalize to just the project ID
+    if (parsed.projectId !== config.project) {
+      logger.debug(`Extracted project ID: ${parsed.projectId}`)
+      config.project = parsed.projectId
+    }
   }
 
   // Validate output directory
