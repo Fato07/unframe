@@ -1,336 +1,229 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unframe - Export Framer to Production React Code</title>
-    <meta name="description" content="Transform Framer designs into clean, production-ready React components with Next.js App Router and Tailwind CSS. No more messy exports.">
-    
-    <!-- OG Tags -->
-    <meta property="og:title" content="Unframe - Export Framer to Production React Code">
-    <meta property="og:description" content="Transform Framer designs into clean, production-ready React components with Next.js App Router and Tailwind CSS.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://unframe.dev">
-    <meta property="og:image" content="https://unframe.dev/og-image.png">
-    
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Unframe - Export Framer to Production React Code">
-    <meta name="twitter:description" content="Transform Framer designs into clean, production-ready React components.">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'brand': '#6366f1',
-                        'brand-dark': '#4f46e5',
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        code, pre { font-family: 'JetBrains Mono', monospace; }
-        .gradient-text {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .code-block {
-            background: linear-gradient(145deg, #1e1b4b 0%, #0f172a 100%);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unframe - Use Framer Components in Any React App</title>
+  <meta name="description" content="Ship your Framer components to production React apps with full fidelity. All animations, interactions, and responsive behavior preserved.">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Unframe - Framer to React, Done Right">
+  <meta property="og:description" content="Ship your Framer components to production React apps with full fidelity.">
+  <meta property="og:image" content="https://unframe.dev/og-image.png">
+  <meta property="og:url" content="https://unframe.dev">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Unframe - Framer to React, Done Right">
+  <meta name="twitter:description" content="Ship your Framer components to production React apps with full fidelity.">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .gradient-text {
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  </style>
 </head>
-<body class="bg-slate-950 text-slate-100 antialiased">
-    <!-- Nav -->
-    <nav class="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <svg class="w-8 h-8 text-brand" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="4" y="4" width="24" height="24" rx="4" stroke="currentColor" stroke-width="2.5"/>
-                    <path d="M12 12L20 16L12 20V12Z" fill="currentColor"/>
-                </svg>
-                <span class="text-xl font-semibold">Unframe</span>
-            </div>
-            <div class="hidden sm:flex items-center gap-6 text-sm text-slate-400">
-                <a href="#features" class="hover:text-white transition">Features</a>
-                <a href="#pricing" class="hover:text-white transition">Pricing</a>
-                <a href="https://github.com/codesdevs/unframe" class="hover:text-white transition">GitHub</a>
-            </div>
-            <a href="#pricing" class="bg-brand hover:bg-brand-dark text-white text-sm font-medium px-4 py-2 rounded-lg transition">
-                Get Started
-            </a>
-        </div>
-    </nav>
+<body class="bg-slate-950 text-white">
+  <!-- Nav -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-lg border-b border-slate-800">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-xl font-bold">⬡ Unframe</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="https://github.com/Fato07/unframe" class="text-slate-400 hover:text-white transition">GitHub</a>
+        <a href="#pricing" class="text-slate-400 hover:text-white transition">Pricing</a>
+        <a href="https://github.com/Fato07/unframe#quick-start" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-medium transition">Get Started</a>
+      </div>
+    </div>
+  </nav>
 
-    <!-- Hero -->
-    <section class="pt-32 pb-20 px-4 sm:px-6">
-        <div class="max-w-4xl mx-auto text-center">
-            <div class="inline-flex items-center gap-2 bg-slate-800/50 border border-slate-700 rounded-full px-4 py-1.5 text-sm text-slate-300 mb-8">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                Now in public beta
-            </div>
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-                Export Framer to<br>
-                <span class="gradient-text">Production React</span>
-            </h1>
-            <p class="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10">
-                Clean, maintainable React components with Next.js App Router and Tailwind CSS. 
-                No more deciphering auto-generated spaghetti code.
-            </p>
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="https://github.com/codesdevs/unframe" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-slate-900 font-medium px-6 py-3 rounded-lg hover:bg-slate-100 transition">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                    View on GitHub
-                </a>
-                <a href="#pricing" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand-dark text-white font-medium px-6 py-3 rounded-lg transition">
-                    Get Pro Access
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                </a>
-            </div>
-        </div>
-    </section>
+  <!-- Hero -->
+  <section class="pt-32 pb-20 px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="inline-block px-4 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-indigo-400 text-sm mb-6">
+        Powered by Unframer • Open Source
+      </div>
+      <h1 class="text-5xl md:text-6xl font-bold mb-6">
+        Use <span class="gradient-text">Framer Components</span><br>in Any React App
+      </h1>
+      <p class="text-xl text-slate-400 mb-8 max-w-2xl mx-auto">
+        Ship your Framer designs to production with full fidelity. 
+        All animations, interactions, and responsive behavior — preserved.
+      </p>
+      <div class="flex items-center justify-center gap-4">
+        <a href="https://github.com/Fato07/unframe#quick-start" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-medium transition flex items-center gap-2">
+          Get Started
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="https://github.com/Fato07/unframe" class="px-6 py-3 border border-slate-700 hover:border-slate-600 rounded-lg font-medium transition">
+          View on GitHub
+        </a>
+      </div>
+    </div>
+  </section>
 
-    <!-- Problem/Solution -->
-    <section class="py-20 px-4 sm:px-6 border-t border-slate-800">
-        <div class="max-w-6xl mx-auto">
-            <div class="grid md:grid-cols-2 gap-8 lg:gap-12">
-                <!-- Before -->
-                <div class="space-y-4">
-                    <div class="flex items-center gap-2 text-red-400 text-sm font-medium">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        Framer Export
-                    </div>
-                    <div class="code-block rounded-xl p-4 sm:p-6 overflow-x-auto border border-slate-800">
-                        <pre class="text-sm text-slate-300"><code><span class="text-slate-500">// Auto-generated mess</span>
-<span class="text-purple-400">export</span> <span class="text-purple-400">const</span> <span class="text-blue-400">Component_x7f3k</span> = () => {
+  <!-- How it works -->
+  <section class="py-20 px-6 border-t border-slate-800">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-12">How It Works</h2>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="w-12 h-12 bg-indigo-500/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl">1</span>
+          </div>
+          <h3 class="font-semibold mb-2">Export from Framer</h3>
+          <p class="text-slate-400">Use the React Export plugin to select which components to export</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-indigo-500/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl">2</span>
+          </div>
+          <h3 class="font-semibold mb-2">Sync to Project</h3>
+          <p class="text-slate-400"><code class="text-indigo-400">npx unframe sync &lt;id&gt;</code> downloads your components</p>
+        </div>
+        <div class="text-center">
+          <div class="w-12 h-12 bg-indigo-500/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl">3</span>
+          </div>
+          <h3 class="font-semibold mb-2">Use in React</h3>
+          <p class="text-slate-400">Import and use your components in Next.js, Remix, Vite — anything</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Code example -->
+  <section class="py-20 px-6">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-12">Simple Integration</h2>
+      <div class="bg-slate-900 rounded-xl p-6 border border-slate-800">
+        <pre class="text-sm overflow-x-auto"><code class="text-slate-300"><span class="text-slate-500">// 1. Import styles</span>
+<span class="text-purple-400">import</span> <span class="text-green-400">'./framer/styles.css'</span>
+
+<span class="text-slate-500">// 2. Import components</span>
+<span class="text-purple-400">import</span> { Hero, Navbar, Footer } <span class="text-purple-400">from</span> <span class="text-green-400">'./framer'</span>
+
+<span class="text-slate-500">// 3. Use them</span>
+<span class="text-purple-400">export default function</span> <span class="text-yellow-400">App</span>() {
   <span class="text-purple-400">return</span> (
-    &lt;<span class="text-green-400">div</span> <span class="text-yellow-400">className</span>=<span class="text-orange-300">"framer-1x2y3z"</span>&gt;
-      &lt;<span class="text-green-400">div</span> <span class="text-yellow-400">className</span>=<span class="text-orange-300">"framer-a4b5c6"</span>&gt;
-        &lt;<span class="text-green-400">div</span> <span class="text-yellow-400">className</span>=<span class="text-orange-300">"framer-d7e8f9"</span>&gt;
-          &lt;<span class="text-green-400">p</span> <span class="text-yellow-400">className</span>=<span class="text-orange-300">"framer-g1h2i3"</span>&gt;
-            {<span class="text-orange-300">"Hello"</span>}
-          &lt;/<span class="text-green-400">p</span>&gt;
-        &lt;/<span class="text-green-400">div</span>&gt;
-      &lt;/<span class="text-green-400">div</span>&gt;
-    &lt;/<span class="text-green-400">div</span>&gt;
+    <span class="text-slate-500">&lt;&gt;</span>
+      <span class="text-blue-400">&lt;Navbar /&gt;</span>
+      <span class="text-blue-400">&lt;Hero</span> <span class="text-orange-400">variant</span>=<span class="text-green-400">"Desktop"</span> <span class="text-blue-400">/&gt;</span>
+      <span class="text-blue-400">&lt;Footer /&gt;</span>
+    <span class="text-slate-500">&lt;/&gt;</span>
   )
 }</code></pre>
-                    </div>
-                    <p class="text-slate-500 text-sm">Cryptic class names, nested divs, impossible to maintain</p>
-                </div>
-                
-                <!-- After -->
-                <div class="space-y-4">
-                    <div class="flex items-center gap-2 text-green-400 text-sm font-medium">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        Unframe Output
-                    </div>
-                    <div class="code-block rounded-xl p-4 sm:p-6 overflow-x-auto border border-brand/30">
-                        <pre class="text-sm text-slate-300"><code><span class="text-slate-500">// Clean, production-ready</span>
-<span class="text-purple-400">export</span> <span class="text-purple-400">function</span> <span class="text-blue-400">HeroSection</span>({ <span class="text-orange-300">title</span>, <span class="text-orange-300">subtitle</span> }) {
-  <span class="text-purple-400">return</span> (
-    &lt;<span class="text-green-400">section</span> <span class="text-yellow-400">className</span>=<span class="text-orange-300">"py-20 px-4"</span>&gt;
-      &lt;<span class="text-green-400">h1</span> <span class="text-yellow-400">className</span>=<span class="text-orange-300">"text-5xl font-bold"</span>&gt;
-        {title}
-      &lt;/<span class="text-green-400">h1</span>&gt;
-      &lt;<span class="text-green-400">p</span> <span class="text-yellow-400">className</span>=<span class="text-orange-300">"text-xl text-gray-600"</span>&gt;
-        {subtitle}
-      &lt;/<span class="text-green-400">p</span>&gt;
-    &lt;/<span class="text-green-400">section</span>&gt;
-  )
-}</code></pre>
-                    </div>
-                    <p class="text-slate-400 text-sm">Semantic components, Tailwind classes, ready for production</p>
-                </div>
-            </div>
-        </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- Features -->
-    <section id="features" class="py-20 px-4 sm:px-6 bg-slate-900/50">
-        <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl sm:text-4xl font-bold mb-4">Built for Modern React</h2>
-                <p class="text-slate-400 max-w-xl mx-auto">Everything you need to ship Framer designs as production code</p>
-            </div>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 hover:border-brand/50 transition">
-                    <div class="w-12 h-12 bg-brand/10 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    </div>
-                    <h3 class="font-semibold mb-2">Next.js App Router</h3>
-                    <p class="text-sm text-slate-400">Server components, layouts, and metadata out of the box</p>
-                </div>
-                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 hover:border-brand/50 transition">
-                    <div class="w-12 h-12 bg-brand/10 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
-                    </div>
-                    <h3 class="font-semibold mb-2">Tailwind CSS</h3>
-                    <p class="text-sm text-slate-400">Utility classes you can actually read and customize</p>
-                </div>
-                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 hover:border-brand/50 transition">
-                    <div class="w-12 h-12 bg-brand/10 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    </div>
-                    <h3 class="font-semibold mb-2">Semantic Props</h3>
-                    <p class="text-sm text-slate-400">Meaningful prop names like title, subtitle, not data_x7f3</p>
-                </div>
-                <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6 hover:border-brand/50 transition">
-                    <div class="w-12 h-12 bg-brand/10 rounded-lg flex items-center justify-center mb-4">
-                        <svg class="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                    </div>
-                    <h3 class="font-semibold mb-2">Responsive by Default</h3>
-                    <p class="text-sm text-slate-400">Mobile-first breakpoints that just work</p>
-                </div>
-            </div>
+  <!-- Features -->
+  <section class="py-20 px-6 border-t border-slate-800">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-12">Why Unframe?</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-800">
+          <div class="text-2xl mb-3">✨</div>
+          <h3 class="font-semibold mb-2">Pixel Perfect</h3>
+          <p class="text-slate-400">Components render exactly as they do in Framer. No layout issues, no conversion artifacts.</p>
         </div>
-    </section>
+        <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-800">
+          <div class="text-2xl mb-3">🎬</div>
+          <h3 class="font-semibold mb-2">Full Animations</h3>
+          <p class="text-slate-400">All Framer animations and interactions work out of the box. Powered by Framer Motion.</p>
+        </div>
+        <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-800">
+          <div class="text-2xl mb-3">📱</div>
+          <h3 class="font-semibold mb-2">Responsive</h3>
+          <p class="text-slate-400">Desktop, Tablet, Mobile variants automatically handled. Use <code class="text-indigo-400">.Responsive</code> wrapper.</p>
+        </div>
+        <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-800">
+          <div class="text-2xl mb-3">🌙</div>
+          <h3 class="font-semibold mb-2">Dark Mode</h3>
+          <p class="text-slate-400">Framer color styles automatically switch with the <code class="text-indigo-400">dark</code> class.</p>
+        </div>
+        <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-800">
+          <div class="text-2xl mb-3">📝</div>
+          <h3 class="font-semibold mb-2">TypeScript</h3>
+          <p class="text-slate-400">Generated types from your Framer component controls. Full IntelliSense support.</p>
+        </div>
+        <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-800">
+          <div class="text-2xl mb-3">⚡</div>
+          <h3 class="font-semibold mb-2">Any Framework</h3>
+          <p class="text-slate-400">Works with Next.js, Remix, Vite, Astro, or any React framework.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Pricing -->
-    <section id="pricing" class="py-20 px-4 sm:px-6">
-        <div class="max-w-5xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl sm:text-4xl font-bold mb-4">Simple Pricing</h2>
-                <p class="text-slate-400">Start free, upgrade when you need more</p>
-            </div>
-            <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
-                <!-- Free -->
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 lg:p-8">
-                    <div class="mb-6">
-                        <h3 class="text-lg font-semibold mb-2">Free</h3>
-                        <div class="flex items-baseline gap-1">
-                            <span class="text-4xl font-bold">$0</span>
-                            <span class="text-slate-500">/forever</span>
-                        </div>
-                    </div>
-                    <ul class="space-y-3 mb-8 text-sm">
-                        <li class="flex items-center gap-3 text-slate-300">
-                            <svg class="w-5 h-5 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                            Core library (MIT)
-                        </li>
-                        <li class="flex items-center gap-3 text-slate-300">
-                            <svg class="w-5 h-5 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                            Basic transformations
-                        </li>
-                        <li class="flex items-center gap-3 text-slate-300">
-                            <svg class="w-5 h-5 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                            Community support
-                        </li>
-                    </ul>
-                    <a href="https://github.com/codesdevs/unframe" class="block w-full text-center bg-slate-800 hover:bg-slate-700 text-white font-medium py-3 rounded-lg transition">
-                        Get Started
-                    </a>
-                </div>
-                
-                <!-- Pro -->
-                <div class="bg-gradient-to-b from-brand/10 to-transparent border-2 border-brand rounded-2xl p-6 lg:p-8 relative">
-                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand text-white text-xs font-medium px-3 py-1 rounded-full">
-                        Most Popular
-                    </div>
-                    <div class="mb-6">
-                        <h3 class="text-lg font-semibold mb-2">Pro</h3>
-                        <div class="flex items-baseline gap-1">
-                            <span class="text-4xl font-bold">$19</span>
-                            <span class="text-slate-500">/month</span>
-                        </div>
-                    </div>
-                    <ul class="space-y-3 mb-8 text-sm">
-                        <li class="flex items-center gap-3 text-slate-300">
-                            <svg class="w-5 h-5 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                            Everything in Free
-                        </li>
-                        <li class="flex items-center gap-3 text-slate-300">
-                            <svg class="w-5 h-5 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                            CLI tool access
-                        </li>
-                        <li class="flex items-center gap-3 text-slate-300">
-                            <svg class="w-5 h-5 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                            Advanced transformations
-                        </li>
-                        <li class="flex items-center gap-3 text-slate-300">
-                            <svg class="w-5 h-5 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                            Priority updates
-                        </li>
-                    </ul>
-                    <a href="https://polar.sh/codesdevs/unframe/subscribe?tier=pro" class="block w-full text-center bg-brand hover:bg-brand-dark text-white font-medium py-3 rounded-lg transition">
-                        Buy Pro
-                    </a>
-                </div>
-                
-                <!-- Team -->
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 lg:p-8">
-                    <div class="mb-6">
-                        <h3 class="text-lg font-semibold mb-2">Team</h3>
-                        <div class="flex items-baseline gap-1">
-                            <span class="text-4xl font-bold">$49</span>
-                            <span class="text-slate-500">/month</span>
-                        </div>
-                    </div>
-                    <ul class="space-y-3 mb-8 text-sm">
-                        <li class="flex items-center gap-3 text-slate-300">
-                            <svg class="w-5 h-5 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                            Everything in Pro
-                        </li>
-                        <li class="flex items-center gap-3 text-slate-300">
-                            <svg class="w-5 h-5 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                            5 team seats
-                        </li>
-                        <li class="flex items-center gap-3 text-slate-300">
-                            <svg class="w-5 h-5 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                            Priority support
-                        </li>
-                        <li class="flex items-center gap-3 text-slate-300">
-                            <svg class="w-5 h-5 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                            Custom integrations
-                        </li>
-                    </ul>
-                    <a href="https://polar.sh/codesdevs/unframe/subscribe?tier=team" class="block w-full text-center bg-slate-800 hover:bg-slate-700 text-white font-medium py-3 rounded-lg transition">
-                        Contact Sales
-                    </a>
-                </div>
-            </div>
+  <!-- Pricing -->
+  <section id="pricing" class="py-20 px-6 border-t border-slate-800">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-4">Pricing</h2>
+      <p class="text-slate-400 text-center mb-12">Open source core. Premium support available.</p>
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Free -->
+        <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-800">
+          <h3 class="font-semibold text-lg mb-2">Free</h3>
+          <p class="text-3xl font-bold mb-4">$0</p>
+          <ul class="text-slate-400 space-y-2 mb-6">
+            <li>✓ CLI & runtime</li>
+            <li>✓ Unlimited components</li>
+            <li>✓ Community support</li>
+            <li>✓ MIT licensed</li>
+          </ul>
+          <a href="https://github.com/Fato07/unframe" class="block text-center px-4 py-2 border border-slate-700 hover:border-slate-600 rounded-lg transition">
+            Get Started
+          </a>
         </div>
-    </section>
+        <!-- Pro -->
+        <div class="bg-slate-900/50 rounded-xl p-6 border-2 border-indigo-500 relative">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-indigo-500 rounded-full text-xs font-medium">
+            Most Popular
+          </div>
+          <h3 class="font-semibold text-lg mb-2">Pro</h3>
+          <p class="text-3xl font-bold mb-4">$19<span class="text-lg text-slate-400">/mo</span></p>
+          <ul class="text-slate-400 space-y-2 mb-6">
+            <li>✓ Everything in Free</li>
+            <li>✓ Priority support</li>
+            <li>✓ Early access features</li>
+            <li>✓ 1 seat</li>
+          </ul>
+          <a href="https://polar.sh/codesdevs/unframe/subscribe?tier=pro" class="block text-center px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg transition">
+            Subscribe
+          </a>
+        </div>
+        <!-- Team -->
+        <div class="bg-slate-900/50 rounded-xl p-6 border border-slate-800">
+          <h3 class="font-semibold text-lg mb-2">Team</h3>
+          <p class="text-3xl font-bold mb-4">$49<span class="text-lg text-slate-400">/mo</span></p>
+          <ul class="text-slate-400 space-y-2 mb-6">
+            <li>✓ Everything in Pro</li>
+            <li>✓ 5 seats</li>
+            <li>✓ Dedicated support</li>
+            <li>✓ SLA available</li>
+          </ul>
+          <a href="https://polar.sh/codesdevs/unframe/subscribe?tier=team" class="block text-center px-4 py-2 border border-slate-700 hover:border-slate-600 rounded-lg transition">
+            Subscribe
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- CTA -->
-    <section class="py-20 px-4 sm:px-6 bg-gradient-to-b from-slate-900 to-slate-950">
-        <div class="max-w-3xl mx-auto text-center">
-            <h2 class="text-3xl sm:text-4xl font-bold mb-4">Ready to ship cleaner code?</h2>
-            <p class="text-slate-400 mb-8">Join developers who've ditched messy Framer exports for production-ready React.</p>
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="https://github.com/codesdevs/unframe" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-slate-900 font-medium px-6 py-3 rounded-lg hover:bg-slate-100 transition">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                    Star on GitHub
-                </a>
-                <a href="#pricing" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand-dark text-white font-medium px-6 py-3 rounded-lg transition">
-                    Get Pro Access
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="py-8 px-4 sm:px-6 border-t border-slate-800">
-        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
-            <div class="flex items-center gap-2">
-                <svg class="w-5 h-5 text-slate-600" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="4" y="4" width="24" height="24" rx="4" stroke="currentColor" stroke-width="2"/>
-                    <path d="M12 12L20 16L12 20V12Z" fill="currentColor"/>
-                </svg>
-                <span>Built by <a href="https://codesdevs.io" class="text-slate-400 hover:text-white transition">CodesDevs</a></span>
-            </div>
-            <div class="flex items-center gap-6">
-                <a href="https://github.com/codesdevs/unframe" class="hover:text-white transition">GitHub</a>
-                <a href="https://twitter.com/codesdevs" class="hover:text-white transition">Twitter</a>
-                <a href="mailto:hello@codesdevs.io" class="hover:text-white transition">Contact</a>
-            </div>
-        </div>
-    </footer>
+  <!-- Footer -->
+  <footer class="py-12 px-6 border-t border-slate-800">
+    <div class="max-w-4xl mx-auto text-center text-slate-400">
+      <p>Built by <a href="https://codesdevs.io" class="text-white hover:text-indigo-400 transition">CodesDevs</a></p>
+      <p class="mt-2 text-sm">Powered by <a href="https://github.com/remorses/unframer" class="text-indigo-400 hover:text-indigo-300">Unframer</a> (MIT)</p>
+    </div>
+  </footer>
 </body>
 </html>
